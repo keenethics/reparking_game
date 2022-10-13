@@ -1,0 +1,15 @@
+.container {
+}
+
+.title {
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.playerTurn {
+  background: lightgreen;
+}
+
+.playerPenalty {
+  background: lightcoral;
+}
