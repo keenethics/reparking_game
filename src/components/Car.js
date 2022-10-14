@@ -1,7 +1,4 @@
-//import { ReactComponent as CarLogo } from '../assets/145008.svg';
-
-// import car.size..., car step from helpers
-import { CarDirection } from '../helpers';
+import { CarDirection, Game } from '../helpers';
 
 import styles from '../styles/Car.module.css';
 
@@ -20,18 +17,18 @@ function Car({ car }) {
   };
 
   return (
-    <>
     <div
-      className={styles.container}
+      className={[styles.container, styles[car.teamColor]].join(' ')}
       style={{
-        top: `${car.top}px`,
-        left: `${car.left}px`,
+        width: `${Game.carWidth}px`,
+        height: `${Game.carHeight}px`,
+        top: `${car.coordinate.top}px`,
+        left: `${car.coordinate.left}px`,
         transform: `rotate(${calcRotationDegrees(car.direction)}deg)`,
       }}
     >
-      <div className={styles.number}>13</div>
+      <div className={styles.number}>{car.number}</div>
     </div>
-    </>
   );
 }
 

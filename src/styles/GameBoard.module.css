@@ -2,18 +2,12 @@
 }
 
 .content {
-  width: 600px;
-  height: 600px;
   border: 1px solid black;
   position: relative;
   display: grid;
-  grid-template-columns: repeat(8, 75px);
-  grid-template-rows: repeat(8, 75px);
 }
 
 .cell {
   border: 1px solid black;
-  width: 75px;
-  height: 75px;
   box-sizing: border-box;
 }

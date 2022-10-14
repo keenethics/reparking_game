@@ -1,12 +1,17 @@
 .container {
-  width: 75px;
-  height: 150px;
   position: absolute;
   text-align: center;
-  background-image: url("../assets/car_blue.svg");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
+}
+
+.blue {
+  background-image: url("../assets/car_blue.svg");
+}
+
+.red {
+  background-image: url("../assets/car_red.svg");
 }
 
 .number {
