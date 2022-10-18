@@ -18,7 +18,7 @@ function Car({ car }) {
 
   return (
     <div
-      className={[styles.container, styles[car.teamColor]].join(' ')}
+      className={[styles.container, styles[car.teamColor], car.isTurn ? styles.highlight : ''].join(' ')}
       style={{
         width: `${Game.carWidth}px`,
         height: `${Game.carHeight}px`,

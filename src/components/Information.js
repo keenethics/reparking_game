@@ -1,9 +1,11 @@
 import styles from '../styles/Information.module.css';
 
-function Information () {
+function Information ({ cars }) {
+  const car = cars.find(c => c.isTurn);
+
   return (
     <div className={styles.container}>
-      Car 3 (Player3) turn
+      Car {car.number} - {car.name}
     </div>
   );
 }
