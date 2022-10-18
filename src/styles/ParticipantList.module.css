@@ -4,6 +4,12 @@
 .title {
   margin-bottom: 20px;
   font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: overline underline;
+}
+
+.item {
+  margin-bottom: 5px;
 }
 
 .playerTurn {

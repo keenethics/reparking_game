@@ -26,7 +26,7 @@ function GameBoard({ cars }) {
           <Car key={idx} car={car} />
         ))}
       </div>
-      <Information />
+      <Information cars={cars} />
     </div>
   );
 }

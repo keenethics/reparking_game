@@ -12,9 +12,9 @@ function App() {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <ParticipantList cars={cars} />
+        <ParticipantList cars={cars} setCars={setCars} />
         <GameBoard cars={cars} />
-        {/*<CarActions car={car} setCar={setCar} />*/}
+        <CarActions cars={cars} setCars={setCars} />
       </div>
     </div>
   );
