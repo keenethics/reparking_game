@@ -3,7 +3,7 @@ import { CarDirection, Game } from '../helpers';
 import styles from '../styles/Car.module.css';
 
 function Car({ car }) {
-  const calcRotationDegrees = (carDirection) => {
+  const getCarRotation = () => {
     switch(car.direction) {
       case CarDirection.up:
         return 0;
@@ -15,6 +15,18 @@ function Car({ car }) {
         return 90;
     }
   };
+  const getNumberRotation = () => {
+    switch(car.direction) {
+      case CarDirection.up:
+        return 0;
+      case CarDirection.down:
+        return 180;
+      case CarDirection.left:
+        return 90;
+      case CarDirection.right:
+        return 270;
+    }
+  };
 
   return (
     <div
@@ -24,10 +36,15 @@ function Car({ car }) {
         height: `${Game.carHeight}px`,
         top: `${car.coordinate.top}px`,
         left: `${car.coordinate.left}px`,
-        transform: `rotate(${calcRotationDegrees(car.direction)}deg)`,
+        transform: `rotate(${getCarRotation()}deg)`,
       }}
     >
-      <div className={styles.number}>{car.number}</div>
+      <div
+        className={styles.number}
+        style={{ transform: `rotate(${getNumberRotation()}deg)` }}
+      >
+        {car.number}
+      </div>
     </div>
   );
 }
