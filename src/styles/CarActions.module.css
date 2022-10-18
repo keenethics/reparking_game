@@ -3,5 +3,92 @@
 
 .title {
   font-weight: bold;
-  margin-bottom: 20px;
+  text-transform: uppercase;
+  text-decoration: overline underline;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 10px;
+}
+
+.item1 {
+  grid-column: 2 / span 1;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.item2 {
+  grid-column: 1 / span 1;
+}
+
+.item3 {
+  grid-column: 3 / span 1;
+}
+
+.item4, .item5, .item6 {
+  grid-column: 2 / span 1;
+}
+
+.item7 {
+  grid-column: 1 / span 1;
+}
+
+.item8 {
+  grid-column: 3 / span 1;
+}
+
+.item9 {
+  grid-column: 2 / span 1;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.item10 {
+  grid-column: 2 / span 1;
+}
+
+.item11 {
+  grid-column: 1 / span 1;
+}
+
+.item12 {
+  grid-column: 3 / span 1;
+}
+
+.item2, .item3, .item4, .item5, .item6, .item7, .item8 {
+  background-color: #f0ad4e;
+  border: 1px solid black;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.item10, .item11, .item12 {
+  background-color: #31b0d5;
+  border: 1px solid black;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.item2:hover,
+.item3:hover,
+.item4:hover,
+.item5:hover,
+.item6:hover,
+.item7:hover,
+.item8:hover,
+.item10:hover,
+.item11:hover,
+.item12:hover {
+  color: white;
+  background-color: black;
 }

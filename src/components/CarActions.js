@@ -1,17 +1,18 @@
-import { CarDirection } from '../helpers';
-
+import { CarDirection, Game } from '../helpers';
 import styles from '../styles/CarActions.module.css';
 
-const step = 75;
+const { step } = Game;
 
-function CarActions({ car, setCar }) {
+function CarActions({ cars, setCars }) {
+  const car = cars.find(item => item.isTurn);
+
   const checkIfBoardEdge = () => {
     // if direction ...
     //return car.top === 400 ? true : false;
   };
 
   const goForward = (numberOfSteps) => {
-    let { top, left } = car;
+    let { top, left } = car.coordinate;
 
     switch (car.direction) {
       case CarDirection.up:
@@ -28,7 +29,12 @@ function CarActions({ car, setCar }) {
         break;
     }
 
-    setCar({ ...car, top, left });
+    const temp = [...cars];
+    temp[car.index] = { ...car, coordinate: { top, left }, isTurn: false };
+    const nextCarIdx = car.index + 1; // change id -> index
+    temp[nextCarIdx] = { ...temp[nextCarIdx], isTurn: true };
+
+    setCars(temp);
   };
 
   const goBackOneStep = () => {
@@ -49,7 +55,7 @@ function CarActions({ car, setCar }) {
         break;
     }
 
-    setCar({ ...car, top, left });
+    setCars({ ...car, top, left });
   };
 
   const turnForwardLeft = () => {
@@ -78,7 +84,7 @@ function CarActions({ car, setCar }) {
         break;
     }
 
-    setCar({ ...car, top, left, direction });
+    setCars({ ...car, top, left, direction });
   };
 
   const turnForwardRight = () => {
@@ -107,7 +113,7 @@ function CarActions({ car, setCar }) {
         break;
     }
 
-    setCar({ ...car, top, left, direction });
+    setCars({ ...car, top, left, direction });
   };
 
   const goToLeftLane = () => {
@@ -132,7 +138,7 @@ function CarActions({ car, setCar }) {
         break;
     }
 
-    setCar({ ...car, top, left });
+    setCars({ ...car, top, left });
   };
 
   const goToRightLane = () => {
@@ -157,7 +163,7 @@ function CarActions({ car, setCar }) {
         break;
     }
 
-    setCar({ ...car, top, left });
+    setCars({ ...car, top, left });
   };
 
   const turnBackLeft = () => {
@@ -186,7 +192,7 @@ function CarActions({ car, setCar }) {
         break;
     }
 
-    setCar({ ...car, top, left, direction });
+    setCars({ ...car, top, left, direction });
   };
 
   const turnBackRight = () => {
@@ -215,34 +221,32 @@ function CarActions({ car, setCar }) {
         break;
     }
 
-    setCar({ ...car, top, left, direction });
+    setCars({ ...car, top, left, direction });
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.title}>Car actions:</div>
-      <div>
-        Go forward:
-        <button onClick={() => goForward(1)} disabled={checkIfBoardEdge()}>x1</button>
-        <button onClick={() => goForward(2)}>x2</button>
-        <button onClick={() => goForward(3)}>x3</button>
-      </div>
-      <div>
-        Go to lane:
-        <button onClick={goToLeftLane}>Left</button>
-        <button onClick={goToRightLane}>Right</button>
-      </div>
-        Turn:
-        <button onClick={turnForwardLeft}>Forward-Left</button>
-        <button onClick={turnForwardRight}>Forward-Right</button>
-      <div>
-        Go back:
-        <button onClick={goBackOneStep}>x1</button>
-      </div>
-      <div>
-        Turn:
-        <button onClick={turnBackLeft}>Back-Left</button>
-        <button onClick={turnBackRight}>Back-Right</button>
+
+      <div className={styles.grid}>
+        <div className={styles.item1}>Forward</div>
+
+        <button className={styles.item2} onClick={turnForwardLeft}>Turn Left</button>
+        <button className={styles.item3} onClick={turnForwardRight}>Turn Right</button>
+
+        <button className={styles.item4} onClick={() => goForward(3)}>3</button>
+        <button className={styles.item5} onClick={() => goForward(2)}>2</button>
+        <button className={styles.item6} onClick={() => goForward(1)} disabled={checkIfBoardEdge()}>1</button>
+
+        <button className={styles.item7} onClick={goToLeftLane}>Lane Left</button>
+        <button className={styles.item8} onClick={goToRightLane}>Lane Right</button>
+
+        <div className={styles.item9}>Back</div>
+
+        <button className={styles.item10} onClick={goBackOneStep}>1</button>
+
+        <button className={styles.item11} onClick={turnBackLeft}>Turn Left</button>
+        <button className={styles.item12} onClick={turnBackRight}>Turn Right</button>
       </div>
     </div>
   );

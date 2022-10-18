@@ -42,11 +42,13 @@ let initialDataOfCars  = new Array(numberOfTeams * numberOfPlayersInTeam)
       const direction = idx < numberOfPlayersInTeam ? CarDirection.down : CarDirection.up;
 
       return {
+        index: idx,
         name,
         number: idx + 1,
         teamColor,
         direction,
         penalty: 0,
+        isTurn: idx > 0 ? false : true,
       };
     });
 
