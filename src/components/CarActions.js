@@ -6,6 +6,15 @@ const { step } = Game;
 function CarActions({ cars, setCars }) {
   const car = cars.find(item => item.isTurn);
 
+  const updateCars = (updatedCar) => {
+    const copy = [...cars];
+    copy[updatedCar.index] = { ...updatedCar, isTurn: false };
+    const nextCarIdx = updatedCar.index + 1;
+    copy[nextCarIdx] = { ...copy[nextCarIdx], isTurn: true };
+
+    setCars(copy);
+  };
+
   const checkIfBoardEdge = () => {
     // if direction ...
     //return car.top === 400 ? true : false;
@@ -29,16 +38,12 @@ function CarActions({ cars, setCars }) {
         break;
     }
 
-    const temp = [...cars];
-    temp[car.index] = { ...car, coordinate: { top, left }, isTurn: false };
-    const nextCarIdx = car.index + 1; // change id -> index
-    temp[nextCarIdx] = { ...temp[nextCarIdx], isTurn: true };
-
-    setCars(temp);
+    const updatedCar = { ...car, coordinate: { top, left } };
+    updateCars(updatedCar);
   };
 
   const goBackOneStep = () => {
-    let { top, left } = car;
+    let { top, left } = car.coordinate;
 
     switch (car.direction) {
       case CarDirection.up:
@@ -55,11 +60,12 @@ function CarActions({ cars, setCars }) {
         break;
     }
 
-    setCars({ ...car, top, left });
+    const updatedCar = { ...car, coordinate: { top, left } };
+    updateCars(updatedCar);
   };
 
   const turnForwardLeft = () => {
-    let { top, left, direction } = car;
+    let { top, left, direction } = car.coordinate;
 
     switch (car.direction) {
       case CarDirection.up:
@@ -84,11 +90,12 @@ function CarActions({ cars, setCars }) {
         break;
     }
 
-    setCars({ ...car, top, left, direction });
+    const updatedCar = { ...car, direction, coordinate: { top, left } };
+    updateCars(updatedCar);
   };
 
   const turnForwardRight = () => {
-    let { top, left, direction } = car;
+    let { top, left, direction } = car.coordinate;
 
     switch (car.direction) {
       case CarDirection.up:
@@ -113,11 +120,12 @@ function CarActions({ cars, setCars }) {
         break;
     }
 
-    setCars({ ...car, top, left, direction });
+    const updatedCar = { ...car, direction, coordinate: { top, left } };
+    updateCars(updatedCar);
   };
 
   const goToLeftLane = () => {
-    let { top, left } = car;
+    let { top, left } = car.coordinate;
 
     switch (car.direction) {
       case CarDirection.up:
@@ -138,11 +146,12 @@ function CarActions({ cars, setCars }) {
         break;
     }
 
-    setCars({ ...car, top, left });
+    const updatedCar = { ...car, coordinate: { top, left } };
+    updateCars(updatedCar);
   };
 
   const goToRightLane = () => {
-    let { top, left } = car;
+    let { top, left } = car.coordinate;
 
     switch (car.direction) {
       case CarDirection.up:
@@ -163,11 +172,12 @@ function CarActions({ cars, setCars }) {
         break;
     }
 
-    setCars({ ...car, top, left });
+    const updatedCar = { ...car, coordinate: { top, left } };
+    updateCars(updatedCar);
   };
 
   const turnBackLeft = () => {
-    let { top, left, direction } = car;
+    let { top, left, direction } = car.coordinate;
 
     switch (car.direction) {
       case CarDirection.up:
@@ -192,11 +202,12 @@ function CarActions({ cars, setCars }) {
         break;
     }
 
-    setCars({ ...car, top, left, direction });
+    const updatedCar = { ...car, direction, coordinate: { top, left } };
+    updateCars(updatedCar);
   };
 
   const turnBackRight = () => {
-    let { top, left, direction } = car;
+    let { top, left, direction } = car.coordinate;
 
     switch (car.direction) {
       case CarDirection.up:
@@ -221,7 +232,8 @@ function CarActions({ cars, setCars }) {
         break;
     }
 
-    setCars({ ...car, top, left, direction });
+    const updatedCar = { ...car, direction, coordinate: { top, left } };
+    updateCars(updatedCar);
   };
 
   return (
@@ -234,9 +246,9 @@ function CarActions({ cars, setCars }) {
         <button className={styles.item2} onClick={turnForwardLeft}>Turn Left</button>
         <button className={styles.item3} onClick={turnForwardRight}>Turn Right</button>
 
-        <button className={styles.item4} onClick={() => goForward(3)}>3</button>
-        <button className={styles.item5} onClick={() => goForward(2)}>2</button>
-        <button className={styles.item6} onClick={() => goForward(1)} disabled={checkIfBoardEdge()}>1</button>
+        <button className={styles.item4} onClick={() => goForward(3)}>&#11014;</button>
+        <button className={styles.item5} onClick={() => goForward(2)}>&#8679;&#8679;</button>
+        <button className={styles.item6} onClick={() => goForward(1)}>&#8593;</button>
 
         <button className={styles.item7} onClick={goToLeftLane}>Lane Left</button>
         <button className={styles.item8} onClick={goToRightLane}>Lane Right</button>
@@ -245,7 +257,7 @@ function CarActions({ cars, setCars }) {
 
         <button className={styles.item10} onClick={goBackOneStep}>1</button>
 
-        <button className={styles.item11} onClick={turnBackLeft}>Turn Left</button>
+        <button className={styles.item11} onClick={turnBackLeft}>&#8617;</button>
         <button className={styles.item12} onClick={turnBackRight}>Turn Right</button>
       </div>
     </div>
