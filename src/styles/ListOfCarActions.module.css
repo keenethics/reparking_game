@@ -1,4 +1,5 @@
 .container {
+  position: relative;
   background-image: url("../assets/car_gray.svg");
   background-repeat: no-repeat;
   background-position: center center;
@@ -10,6 +11,57 @@
   font-weight: bold;
   text-transform: uppercase;
   text-decoration: overline underline;
+}
+
+.toastBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.toastContainer {
+  position: absolute;
+  top: 200px;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  z-index: 100;
+  background-color: black;
+  border: 5px solid white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.toastTitle {
+  font-weight: bold;
+  color: white;
+  font-size: 30px;
+}
+
+.toastBtn {
+  background-color: white;
+  padding: 1px 1px;
+  border-radius: 50%;
+  border: 1px solid black;
+  color: black;
+  font-size: 40px;
+  font-weight: bold;
+  width: 60px;
+  height: 60px;
+  text-transform: uppercase;
+}
+
+.toastBtn:hover {
+  cursor: pointer;
+  background-color: lightgreen;
 }
 
 .grid {

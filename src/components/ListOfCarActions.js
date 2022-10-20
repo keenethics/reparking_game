@@ -1,7 +1,10 @@
+import { useState } from 'react';
+
 import { Game, Car } from '../helpers';
 import styles from '../styles/ListOfCarActions.module.css';
 
 function ListOfCarActions({ cars, setCars }) {
+  const [isCarCrash, setIsCarCrash] = useState(false);
   const selectedCar = cars.find(item => item.isTurn);
 
   const updateCars = (updatedCar) => {
@@ -111,86 +114,97 @@ function ListOfCarActions({ cars, setCars }) {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.title}>Car actions:</div>
+    <>
+      {isCarCrash && <div className={styles.toastBg} />}
 
-      <div className={styles.grid}>
-        <button
-          className={styles.item1}
-          onClick={turnForwardLeft}
-          disabled={!canTurnForwardLeft()}
-        >
-          &#8624;
-        </button>
-        <button
-          className={styles.item2}
-          onClick={turnForwardRight}
-          disabled={!canTurnForwardRight()}
-        >
-          &#8625;
-        </button>
+      <div className={styles.container}>
+        <div className={styles.title}>Car actions:</div>
 
-        <button
-          className={styles.item3}
-          onClick={() => goForward(3)}
-          disabled={!canGoForward(3)}
-        >
-          &#8593;&#8593;&#8593;
-        </button>
-        <button
-          className={styles.item4}
-          onClick={() => goForward(2)}
-          disabled={!canGoForward(2)}
-        >
-          &#8593;&#8593;
-        </button>
-        <button
-          className={styles.item5}
-          onClick={() => goForward(1)}
-          disabled={!canGoForward(1)}
-        >
-          &#8593;
-        </button>
+        <div className={styles.grid}>
+          <button
+            className={styles.item1}
+            onClick={turnForwardLeft}
+            disabled={!canTurnForwardLeft()}
+          >
+            &#8624;
+          </button>
+          <button
+            className={styles.item2}
+            onClick={turnForwardRight}
+            disabled={!canTurnForwardRight()}
+          >
+            &#8625;
+          </button>
 
-        <button
-          className={styles.item6}
-          onClick={goToLeftLane}
-          disabled={!canGoToLeftLane()}
-        >
-          &#8598;
-        </button>
-        <button
-          className={styles.item7}
-          onClick={goToRightLane}
-          disabled={!canGoToRightLane()}
-        >
-          &#8599;
-        </button>
+          <button
+            className={styles.item3}
+            onClick={() => goForward(3)}
+            disabled={!canGoForward(3)}
+          >
+            &#8593;&#8593;&#8593;
+          </button>
+          <button
+            className={styles.item4}
+            onClick={() => goForward(2)}
+            disabled={!canGoForward(2)}
+          >
+            &#8593;&#8593;
+          </button>
+          <button
+            className={styles.item5}
+            onClick={() => goForward(1)}
+            disabled={!canGoForward(1)}
+          >
+            &#8593;
+          </button>
 
-        <button
-          className={styles.item8}
-          onClick={goOneStepBack}
-          disabled={!canGoOneStepBack()}
-        >
-          &#8595;
-        </button>
+          <button
+            className={styles.item6}
+            onClick={goToLeftLane}
+            disabled={!canGoToLeftLane()}
+          >
+            &#8598;
+          </button>
+          <button
+            className={styles.item7}
+            onClick={goToRightLane}
+            disabled={!canGoToRightLane()}
+          >
+            &#8599;
+          </button>
 
-        <button
-          className={styles.item9}
-          onClick={turnBackLeft}
-          disabled={!canTurnBackLeft()}
-        >
-          &#8629;
-        </button>
-        <button
-          className={styles.item10}
-          onClick={turnBackRight}
-          disabled={!canTurnBackRight()}
-        >
-          &#8627;
-        </button>
+          <button
+            className={styles.item8}
+            onClick={goOneStepBack}
+            disabled={!canGoOneStepBack()}
+          >
+            &#8595;
+          </button>
+
+          <button
+            className={styles.item9}
+            onClick={turnBackLeft}
+            disabled={!canTurnBackLeft()}
+          >
+            &#8629;
+          </button>
+          <button
+            className={styles.item10}
+            onClick={turnBackRight}
+            disabled={!canTurnBackRight()}
+          >
+            &#8627;
+          </button>
+        </div>
+
+        {isCarCrash && (
+          <div className={styles.toastContainer}>
+            <div className={styles.toastTitle}>Car crash</div>
+            <button className={styles.toastBtn}>&#128176;</button>
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 }
 
