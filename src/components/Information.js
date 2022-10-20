@@ -5,7 +5,7 @@ function Information ({ cars }) {
 
   return (
     <div className={styles.container}>
-      Car {car.number} - {car.name}
+      Car {car?.number} - {car?.name}
     </div>
   );
 }

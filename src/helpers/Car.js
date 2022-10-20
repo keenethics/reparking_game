@@ -9,6 +9,8 @@ const Car = {
     right: 'right',
   },
   calcStepsForward(car, numberOfSteps) {
+    if (!car) return;
+
     let { top, left } = car.coordinate;
     const { step, Direction } = this;
 
@@ -30,6 +32,8 @@ const Car = {
     return { ...car, coordinate: { top, left } };
   },
   calcOneStepBack(car) {
+    if (!car) return;
+
     let { top, left } = car.coordinate;
     const { step, Direction } = this;
 
@@ -51,6 +55,8 @@ const Car = {
     return { ...car, coordinate: { top, left } };
   },
   calcStepToLeftLane(car) {
+    if (!car) return;
+
     let { top, left } = car.coordinate;
     const { step, Direction } = this;
 
@@ -76,6 +82,8 @@ const Car = {
     return { ...car, coordinate: { top, left } };
   },
   calcStepToRightLane(car) {
+    if (!car) return;
+
     let { top, left } = car.coordinate;
     const { step, Direction } = this;
 
@@ -101,6 +109,8 @@ const Car = {
     return { ...car, coordinate: { top, left } };
   },
   calcTurnForwardLeft(car) {
+    if (!car) return;
+
     let { direction, coordinate: { top, left } } = car;
     const { step, Direction } = this;
 
@@ -130,6 +140,8 @@ const Car = {
     return { ...car, direction, coordinate: { top, left } };
   },
   calcTurnForwardRight(car) {
+    if (!car) return;
+
     let { direction, coordinate: { top, left } } = car;
     const { step, Direction } = this;
 
@@ -159,6 +171,8 @@ const Car = {
     return { ...car, direction, coordinate: { top, left } };
   },
   calcTurnBackLeft (car) {
+    if (!car) return;
+
     let { direction, coordinate: { top, left } } = car;
     const { step, Direction } = this;
 
@@ -188,6 +202,8 @@ const Car = {
     return { ...car, direction, coordinate: { top, left } };
   },
   calcTurnBackRight (car) {
+    if (!car) return;
+
     let { direction, coordinate: { top, left } } = car;
     const { step, Direction } = this;
 

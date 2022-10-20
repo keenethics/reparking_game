@@ -5,6 +5,7 @@ import styles from '../styles/ListOfCarActions.module.css';
 
 function ListOfCarActions({ cars, setCars }) {
   const [isCarCrash, setIsCarCrash] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
   const selectedCar = cars.find(item => item.isTurn);
 
   const updateCars = (updatedCar) => {
@@ -19,7 +20,7 @@ function ListOfCarActions({ cars, setCars }) {
       nextCar = copy.find(c => c.penalty === 0);
 
       if (!nextCar) {
-        // game over - 0 turns left - all cars are blocked
+        setIsGameOver(true);
       } else {
         copy[nextCar.index] = { ...nextCar, isTurn: true };
       }
@@ -29,6 +30,8 @@ function ListOfCarActions({ cars, setCars }) {
   };
 
   const isCarWithinBorders = (car) => {
+    if (!car) return false;
+
     switch(car.direction) {
       case Car.Direction.up:
       case Car.Direction.down:
@@ -127,7 +130,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   return (
     <>
-      {isCarCrash && <div className={styles.toastBg} />}
+      {isCarCrash || isGameOver ? <div className={styles.toastBg} /> : null}
 
       <div className={styles.container}>
         <div className={styles.title}>Car actions:</div>
@@ -210,12 +213,18 @@ function ListOfCarActions({ cars, setCars }) {
         </div>
 
         {isCarCrash && (
-          <div className={styles.toastContainer}>
+          <div className={styles.toastCarCrash}>
             <div className={styles.toastTitle}>Car crash</div>
             <button className={styles.toastBtn}>&#128176;</button>
           </div>
         )}
       </div>
+      {isGameOver && (
+        <div className={styles.toastGameOver}>
+          <div className={styles.toastTitle}>Game over</div>
+          <button className={styles.toastBtn} disabled>&#10060;</button>
+        </div>
+      )}
     </>
   );
 }
