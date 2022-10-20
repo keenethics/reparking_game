@@ -1,0 +1,115 @@
+.container {
+  background-image: url("../assets/car_gray.svg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  height: 650px;
+}
+
+.title {
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: overline underline;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 5px 60px;
+  margin-top: 50px;
+}
+
+.item1 {
+  grid-column: 1 / span 1;
+}
+
+.item2 {
+  grid-column: 3 / span 1;
+}
+
+.item3, .item4, .item5 {
+  grid-column: 2 / span 1;
+}
+
+.item5 {
+  margin-bottom: 10px;
+}
+
+.item6 {
+  grid-column: 1 / span 1;
+}
+
+.item7 {
+  grid-column: 3 / span 1;
+}
+
+.item8 {
+  grid-column: 2 / span 1;
+  margin-top: 130px;
+}
+
+.item9 {
+  grid-column: 1 / span 1;
+}
+
+.item10 {
+  grid-column: 3 / span 1;
+}
+
+.item1, .item2, .item3, .item4, .item5, .item6, .item7 {
+  background-color: #f0ad4e;
+}
+
+.item8, .item9, .item10 {
+  background-color: #31b0d5;
+}
+
+.item1,
+.item2,
+.item3,
+.item4,
+.item5,
+.item6,
+.item7,
+.item8,
+.item9,
+.item10 {
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 50%;
+  padding: 6px 6px;
+  border: 3px solid black;
+  width: 50px;
+  height: 50px;
+}
+
+.item1:hover,
+.item2:hover,
+.item3:hover,
+.item4:hover,
+.item5:hover,
+.item6:hover,
+.item7:hover,
+.item8:hover,
+.item9:hover,
+.item10:hover {
+  color: white;
+  background-color: black;
+  cursor: pointer;
+}
+
+.item1:disabled,
+.item2:disabled,
+.item3:disabled,
+.item4:disabled,
+.item5:disabled,
+.item6:disabled,
+.item7:disabled,
+.item8:disabled,
+.item9:disabled,
+.item10:disabled {
+  color: gray;
+  background-color: lightgray;
+  cursor: auto;
+  border: 1px solid gray;
+}

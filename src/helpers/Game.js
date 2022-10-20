@@ -1,11 +1,21 @@
-const STEP = 75;
+const cellWidth = 75;
+const cellHeight = 75;
+const numberOfCellsVertically = 8;
+const numberOfCellsHorizontally = 8;
 
 const Game = {
-  step: STEP,
   numberOfPlayersInTeam: 8,
   numberOfTeams: 2,
-  carWidth: STEP,
-  carHeight: 2 * STEP,
+  cellWidth,
+  cellHeight,
+  numberOfCellsVertically,
+  numberOfCellsHorizontally,
+  border: {
+    top: 0,
+    left: 0,
+    bottom: numberOfCellsVertically * cellHeight,
+    right: numberOfCellsHorizontally * cellWidth,
+  },
 };
 
 export default Game;
