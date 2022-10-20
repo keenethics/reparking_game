@@ -1,4 +1,4 @@
-import Car from './Car';
+import CarModel from './CarModel';
 import Information from './Information';
 import { Game } from '../helpers';
 import styles from '../styles/GameBoard.module.css'
@@ -7,23 +7,23 @@ function GameBoard({ cars }) {
   return (
     <div className={styles.container}>
       <div
-        className={styles.content}
+        className={styles.grid}
         style={{
-          width: `${Game.step * Game.numberOfPlayersInTeam}px`,
-          height: `${Game.step * Game.numberOfPlayersInTeam}px`,
-          gridTemplateColumns: `repeat(${Game.numberOfPlayersInTeam}, ${Game.step}px)`,
-          gridTemplateRows: `repeat(${Game.numberOfPlayersInTeam}, ${Game.step}px)`,
+          width: `${Game.cellWidth * Game.numberOfCellsHorizontally}px`,
+          height: `${Game.cellHeight * Game.numberOfCellsVertically}px`,
+          gridTemplateColumns: `repeat(${Game.numberOfCellsVertically}, ${Game.cellHeight}px)`,
+          gridTemplateRows: `repeat(${Game.numberOfCellsHorizontally}, ${Game.cellWidth}px)`,
         }}
       >
         {new Array(64).fill().map((item, idx) => (
           <div
             key={idx}
             className={styles.cell}
-            style={{ width: `${Game.step}px`, height: `${Game.step}px` }}
+            style={{ width: `${Game.cellWidth}px`, height: `${Game.cellHeight}px` }}
           />
         ))}
         {cars.map((car, idx) => (
-          <Car key={idx} car={car} />
+          <CarModel key={idx} car={car} />
         ))}
       </div>
       <Information cars={cars} />

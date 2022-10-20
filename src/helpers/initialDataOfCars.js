@@ -1,8 +1,8 @@
-import CarDirection from './CarDirection';
+import Car from './Car';
 import Game from './Game';
 import TeamColor from './TeamColor';
 
-const { numberOfTeams, numberOfPlayersInTeam, step } = Game;
+const { numberOfTeams, numberOfPlayersInTeam } = Game;
 
 function randomizePositionsOfCars(cars) {
   const team1 = cars.filter(car => car.teamColor === TeamColor.blue);
@@ -25,8 +25,8 @@ function randomizePositionsOfCars(cars) {
       ...car,
       startPosition,
       coordinate: {
-        top: car.teamColor === TeamColor.blue ? 0 : numberOfPlayersInTeam * step - Game.carHeight,
-        left: car.teamColor === TeamColor.blue ? step * startPosition : step * (startPosition - numberOfPlayersInTeam),
+        top: car.teamColor === TeamColor.blue ? 0 : Game.numberOfCellsVertically * Game.cellHeight - Car.height,
+        left: car.teamColor === TeamColor.blue ? startPosition * Game.cellWidth : (startPosition - numberOfPlayersInTeam) * Game.cellWidth,
       },
     };
   });
@@ -37,7 +37,7 @@ let initialDataOfCars  = new Array(numberOfTeams * numberOfPlayersInTeam)
     .map((item, idx) => {
       const name = `Player${idx + 1}`;
       const teamColor = idx % 2 === 0 ? TeamColor.blue : TeamColor.red;
-      const direction = idx % 2 === 0 ? CarDirection.down : CarDirection.up;
+      const direction = idx % 2 === 0 ? Car.Direction.down : Car.Direction.up;
 
       return {
         index: idx,

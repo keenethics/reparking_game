@@ -1,6 +1,11 @@
-import CarDirection from './CarDirection';
 import initialDataOfCars from './initialDataOfCars';
 import Game from './Game';
 import TeamColor from './TeamColor';
+import Car from './Car';
 
-export { CarDirection, initialDataOfCars, Game, TeamColor };
+export {
+  initialDataOfCars,
+  Game,
+  TeamColor,
+  Car,
+};

@@ -1,29 +1,29 @@
-import { CarDirection, Game } from '../helpers';
+import { Car } from '../helpers';
 
-import styles from '../styles/Car.module.css';
+import styles from '../styles/CarModel.module.css';
 
-function Car({ car }) {
+function CarModel({ car }) {
   const getCarRotation = () => {
     switch(car.direction) {
-      case CarDirection.up:
+      case Car.Direction.up:
         return 0;
-      case CarDirection.down:
+      case Car.Direction.down:
         return 180;
-      case CarDirection.left:
+      case Car.Direction.left:
         return 270;
-      case CarDirection.right:
+      case Car.Direction.right:
         return 90;
     }
   };
   const getNumberRotation = () => {
     switch(car.direction) {
-      case CarDirection.up:
+      case Car.Direction.up:
         return 0;
-      case CarDirection.down:
+      case Car.Direction.down:
         return 180;
-      case CarDirection.left:
+      case Car.Direction.left:
         return 90;
-      case CarDirection.right:
+      case Car.Direction.right:
         return 270;
     }
   };
@@ -32,8 +32,8 @@ function Car({ car }) {
     <div
       className={[styles.container, styles[car.teamColor], car.isTurn ? styles.highlight : ''].join(' ')}
       style={{
-        width: `${Game.carWidth}px`,
-        height: `${Game.carHeight}px`,
+        width: `${Car.width}px`,
+        height: `${Car.height}px`,
         top: `${car.coordinate.top}px`,
         left: `${car.coordinate.left}px`,
         transform: `rotate(${getCarRotation()}deg)`,
@@ -49,4 +49,4 @@ function Car({ car }) {
   );
 }
 
-export default Car;
+export default CarModel;

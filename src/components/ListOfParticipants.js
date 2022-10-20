@@ -1,6 +1,6 @@
-import styles from '../styles/ParticipantList.module.css';
+import styles from '../styles/ListOfParticipants.module.css';
 
-function ParticipantList({ cars, setCars }) {
+function ListOfParticipants({ cars, setCars }) {
   return (
     <div className={styles.container}>
       <div className={styles.title}>Participants:</div>
@@ -27,4 +27,4 @@ function ParticipantList({ cars, setCars }) {
   );
 }
 
-export default ParticipantList;
+export default ListOfParticipants;

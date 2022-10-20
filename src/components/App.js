@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import ParticipantList from './ParticipantList';
+import ListOfParticipants from './ListOfParticipants';
 import GameBoard from './GameBoard';
-import CarActions from './CarActions';
+import ListOfCarActions from './ListOfCarActions';
 import { initialDataOfCars } from '../helpers';
 import styles from '../styles/App.module.css';
 
@@ -12,9 +12,9 @@ function App() {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <ParticipantList cars={cars} setCars={setCars} />
+        <ListOfParticipants cars={cars} setCars={setCars} />
         <GameBoard cars={cars} />
-        <CarActions cars={cars} setCars={setCars} />
+        <ListOfCarActions cars={cars} setCars={setCars} />
       </div>
     </div>
   );
