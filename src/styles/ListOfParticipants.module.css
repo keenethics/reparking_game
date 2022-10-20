@@ -8,8 +8,15 @@
   text-decoration: overline underline;
 }
 
-.item {
-  margin-bottom: 5px;
+.grid {
+  display: grid;
+  row-gap: 5px;
+  column-gap: 5px;
+  grid-template-columns: auto auto auto;
+}
+
+.item1, .item2, .item3 {
+  text-align: center;
 }
 
 .playerTurn {
