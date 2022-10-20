@@ -8,10 +8,22 @@ function ListOfCarActions({ cars, setCars }) {
   const selectedCar = cars.find(item => item.isTurn);
 
   const updateCars = (updatedCar) => {
-    const copy = [...cars];
+    let copy = [...cars];
     copy[updatedCar.index] = { ...updatedCar, isTurn: false };
-    const nextCarIdx = updatedCar.index + 1;
-    copy[nextCarIdx] = { ...copy[nextCarIdx], isTurn: true };
+    let nextCar = copy.slice(updatedCar.index + 1).find(c => c.penalty === 0);
+
+    if (nextCar) {
+      copy[nextCar.index] = { ...nextCar, isTurn: true };
+    } else {
+      copy = copy.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
+      nextCar = copy.find(c => c.penalty === 0);
+
+      if (!nextCar) {
+        // game over - 0 turns left - all cars are blocked
+      } else {
+        copy[nextCar.index] = { ...nextCar, isTurn: true };
+      }
+    }
 
     setCars(copy);
   };
