@@ -1,17 +1,12 @@
 .container {
 }
 
-.title {
-  margin-bottom: 20px;
-  font-weight: bold;
-  text-transform: uppercase;
-  text-decoration: overline underline;
-}
-
 .grid {
   display: grid;
-  row-gap: 5px;
-  column-gap: 5px;
+  /*
+   * row-gap: 5px;
+   * column-gap: 5px;
+   */
   grid-template-columns: auto auto auto;
 }
 
@@ -19,10 +14,37 @@
   text-align: center;
 }
 
+.item2 {
+  border: none;
+  padding: 3px 0;
+}
+
+.item1, .item2, .item3 {
+  border-bottom: 2px solid #ddd;
+}
+
+.item1 {
+  border-right: 2px solid #ddd;
+  padding: 3px 5px;
+}
+
+.item3 {
+  border-left: 2px solid #ddd;
+  padding: 3px 5px;
+}
+
 .playerTurn {
-  background: lightgreen;
+  /*
+   * background: lightgreen;
+   * background: #5cb85c;
+   */
+  background-color: #dff0d8;
 }
 
 .playerPenalty {
-  background: lightcoral;
+  /*
+   * background: lightcoral;
+   * background: #d9534f;
+   */
+  background-color: #f2dede;
 }

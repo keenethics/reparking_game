@@ -7,12 +7,6 @@
   height: 650px;
 }
 
-.title {
-  font-weight: bold;
-  text-transform: uppercase;
-  text-decoration: overline underline;
-}
-
 .toastBg {
   position: absolute;
   top: 0;
@@ -78,7 +72,7 @@
 
 .toastBtn:hover {
   cursor: pointer;
-  background-color: lightgreen;
+  background-color: #f0ad4e;
 }
 
 .toastBtn:disabled {
@@ -90,7 +84,7 @@
   display: grid;
   grid-template-columns: auto auto auto;
   gap: 5px 60px;
-  margin-top: 50px;
+  margin-top: 65px;
 }
 
 .item1 {
@@ -119,14 +113,22 @@
 
 .item8 {
   grid-column: 2 / span 1;
-  margin-top: 130px;
+  font-weight: bold;
+  font-size: 40px;
+  color: black;
+  text-align: center;
 }
 
 .item9 {
-  grid-column: 1 / span 1;
+  grid-column: 2 / span 1;
+  margin-top: 85px;
 }
 
 .item10 {
+  grid-column: 1 / span 1;
+}
+
+.item11 {
   grid-column: 3 / span 1;
 }
 
@@ -134,7 +136,7 @@
   background-color: #f0ad4e;
 }
 
-.item8, .item9, .item10 {
+.item9, .item10, .item11 {
   background-color: #31b0d5;
 }
 
@@ -145,9 +147,9 @@
 .item5,
 .item6,
 .item7,
-.item8,
 .item9,
-.item10 {
+.item10,
+.item11 {
   font-weight: bold;
   font-size: 25px;
   border-radius: 50%;
@@ -164,9 +166,9 @@
 .item5:hover,
 .item6:hover,
 .item7:hover,
-.item8:hover,
 .item9:hover,
-.item10:hover {
+.item10:hover,
+.item11:hover {
   color: white;
   background-color: black;
   cursor: pointer;
@@ -179,9 +181,9 @@
 .item5:disabled,
 .item6:disabled,
 .item7:disabled,
-.item8:disabled,
 .item9:disabled,
-.item10:disabled {
+.item10:disabled,
+.item11:disabled {
   color: gray;
   background-color: lightgray;
   cursor: auto;

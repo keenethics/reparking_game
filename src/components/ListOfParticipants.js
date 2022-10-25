@@ -5,7 +5,6 @@ import styles from '../styles/ListOfParticipants.module.css';
 function ListOfParticipants({ cars, setCars }) {
   return (
     <div className={styles.container}>
-      <div className={styles.title}>Participants:</div>
       <div className={styles.grid}>
         <div className={styles.item1}>Car</div>
         <div className={styles.item2}>Name</div>
