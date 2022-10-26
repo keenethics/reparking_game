@@ -4,13 +4,69 @@ import { Game, Car } from '../helpers';
 import styles from '../styles/ListOfCarActions.module.css';
 
 function ListOfCarActions({ cars, setCars }) {
+  const [offenderBeforeMove, setOffenderBeforeMove] = useState(null);
   const [isCarCrash, setIsCarCrash] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const selectedCar = cars.find(item => item.isTurn);
 
-  const updateCars = (updatedCar) => {
+  const makeMove = (updatedCar) => {
     let copy = [...cars];
     copy[updatedCar.index] = { ...updatedCar, isTurn: false };
+    copy = copy.map(c => {
+      let rowIndex;
+      let colIndex;
+
+      if (updatedCar.index === c.index) {
+        return c;
+      }
+
+      switch(c.direction) {
+        case Car.Direction.up:
+        case Car.Direction.down:
+          rowIndex = c.coordinate.top / Game.cellHeight;
+          colIndex = c.coordinate.left / Game.cellWidth;
+          return {
+            ...c,
+            onCells: [
+              `row${rowIndex + 1},col${colIndex + 1}`,
+              `row${rowIndex + 2},col${colIndex + 1}`,
+            ],
+          };
+        case Car.Direction.left:
+        case Car.Direction.right:
+          rowIndex = (c.coordinate.top + Car.width / 2) / Game.cellHeight;
+          colIndex = (c.coordinate.left - Car.height / 4) / Game.cellWidth;
+          return {
+            ...c,
+            onCells: [
+              `row${rowIndex + 1},col${colIndex + 1}`,
+              `row${rowIndex + 1},col${colIndex + 2}`,
+            ],
+          };
+      }
+    });
+    let offender = null;
+    let victim = null;
+    let isCrash = false;
+    copy[updatedCar.index].moves.some(move => {
+      copy.some(c => {
+        if (updatedCar.index !== c.index && c.onCells.includes(move)) {
+          isCrash = true;
+          offender = copy[updatedCar.index];
+          victim = c;
+        }
+
+        return isCrash;
+      });
+
+      return isCrash;
+    });
+
+    if (isCrash) {
+      copy[offender.index] = { ...offender, penalty: offender.penalty + 2 };
+      copy[victim.index] = { ...victim, penalty: victim.penalty + 1 };
+    }
+
     let nextCar = copy.slice(updatedCar.index + 1).find(c => c.penalty === 0);
 
     if (nextCar) {
@@ -26,7 +82,13 @@ function ListOfCarActions({ cars, setCars }) {
       }
     }
 
-    setCars(copy);
+    if (isCrash) {
+      setOffenderBeforeMove({ ...selectedCar });
+      setCars(copy);
+      setIsCarCrash(true);
+    } else {
+      setCars(copy);
+    }
   };
 
   const isCarWithinBorders = (car) => {
@@ -50,7 +112,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   const goForward = (numberOfSteps) => {
     const updatedCar = Car.calcStepsForward(selectedCar, numberOfSteps);
-    updateCars(updatedCar);
+    makeMove(updatedCar);
   };
 
   const canGoForward = (numberOfSteps) => {
@@ -60,7 +122,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   const goOneStepBack = () => {
     const updatedCar = Car.calcOneStepBack(selectedCar);
-    updateCars(updatedCar);
+    makeMove(updatedCar);
   };
 
   const canGoOneStepBack = () => {
@@ -70,7 +132,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   const goToLeftLane = () => {
     const updatedCar = Car.calcStepToLeftLane(selectedCar);
-    updateCars(updatedCar);
+    makeMove(updatedCar);
   };
 
   const canGoToLeftLane = () => {
@@ -80,7 +142,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   const goToRightLane = () => {
     const updatedCar = Car.calcStepToRightLane(selectedCar);
-    updateCars(updatedCar);
+    makeMove(updatedCar);
   };
 
   const canGoToRightLane = () => {
@@ -90,7 +152,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   const turnForwardLeft = () => {
     const updatedCar = Car.calcTurnForwardLeft(selectedCar);
-    updateCars(updatedCar);
+    makeMove(updatedCar);
   };
 
   const canTurnForwardLeft = () => {
@@ -100,7 +162,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   const turnForwardRight = () => {
     const updatedCar = Car.calcTurnForwardRight(selectedCar);
-    updateCars(updatedCar);
+    makeMove(updatedCar);
   };
 
   const canTurnForwardRight = () => {
@@ -110,7 +172,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   const turnBackLeft = () => {
     const updatedCar = Car.calcTurnBackLeft(selectedCar);
-    updateCars(updatedCar);
+    makeMove(updatedCar);
   };
 
   const canTurnBackLeft = () => {
@@ -120,7 +182,7 @@ function ListOfCarActions({ cars, setCars }) {
 
   const turnBackRight = () => {
     const updatedCar = Car.calcTurnBackRight(selectedCar);
-    updateCars(updatedCar);
+    makeMove(updatedCar);
   };
 
   const canTurnBackRight = () => {
@@ -128,13 +190,24 @@ function ListOfCarActions({ cars, setCars }) {
     return isCarWithinBorders(updatedCar);
   };
 
+  const handleCarCrash = () => {
+    const copy = [...cars];
+    copy[offenderBeforeMove.index] = {
+      ...copy[offenderBeforeMove.index],
+      direction: offenderBeforeMove.direction,
+      coordinate: offenderBeforeMove.coordinate,
+    };
+    delete copy[offenderBeforeMove.index].moves;
+    setOffenderBeforeMove(null);
+    setCars(copy);
+    setIsCarCrash(false);
+  };
+
   return (
     <>
       {isCarCrash || isGameOver ? <div className={styles.toastBg} /> : null}
 
       <div className={styles.container}>
-        <div className={styles.title}>Car actions:</div>
-
         <div className={styles.grid}>
           <button
             className={styles.item1}
@@ -188,8 +261,10 @@ function ListOfCarActions({ cars, setCars }) {
             &#8599;
           </button>
 
+          <div className={styles.item8}>{selectedCar?.number}</div>
+
           <button
-            className={styles.item8}
+            className={styles.item9}
             onClick={goOneStepBack}
             disabled={!canGoOneStepBack()}
           >
@@ -197,14 +272,14 @@ function ListOfCarActions({ cars, setCars }) {
           </button>
 
           <button
-            className={styles.item9}
+            className={styles.item10}
             onClick={turnBackLeft}
             disabled={!canTurnBackLeft()}
           >
             &#8629;
           </button>
           <button
-            className={styles.item10}
+            className={styles.item11}
             onClick={turnBackRight}
             disabled={!canTurnBackRight()}
           >
@@ -215,7 +290,7 @@ function ListOfCarActions({ cars, setCars }) {
         {isCarCrash && (
           <div className={styles.toastCarCrash}>
             <div className={styles.toastTitle}>Car crash</div>
-            <button className={styles.toastBtn}>&#128176;</button>
+            <button className={styles.toastBtn} onClick={handleCarCrash}>&#128110;</button>
           </div>
         )}
       </div>
