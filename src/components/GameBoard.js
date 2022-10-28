@@ -3,7 +3,7 @@ import Information from './Information';
 import { Game } from '../helpers';
 import styles from '../styles/GameBoard.module.css'
 
-function GameBoard({ cars }) {
+function GameBoard({ cars, gridCells }) {
   return (
     <div className={styles.container}>
       <div
@@ -15,11 +15,11 @@ function GameBoard({ cars }) {
           gridTemplateRows: `repeat(${Game.numberOfCellsHorizontally}, ${Game.cellWidth}px)`,
         }}
       >
-        {new Array(64).fill().map((item, idx) => (
+        {gridCells.map((cell, idx) => (
           <div
-            key={idx}
+            key={cell.id}
             className={styles.cell}
-            style={{ width: `${Game.cellWidth}px`, height: `${Game.cellHeight}px` }}
+            style={cell.style}
           />
         ))}
         {cars.map((car, idx) => (

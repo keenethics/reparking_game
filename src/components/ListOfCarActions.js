@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Game, Car } from '../helpers';
 import styles from '../styles/ListOfCarActions.module.css';
 
-function ListOfCarActions({ cars, setCars }) {
+function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
   const [offenderBeforeMove, setOffenderBeforeMove] = useState(null);
   const [isCarCrash, setIsCarCrash] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
@@ -89,6 +89,13 @@ function ListOfCarActions({ cars, setCars }) {
     } else {
       setCars(copy);
     }
+
+    setGridCells(gridCells.map(cell => {
+      if (cell.style.boxShadow !== 'none') {
+        return { ...cell, style: { ...cell.style, boxShadow: 'none' } };
+      }
+      return cell;
+    }));
   };
 
   const isCarWithinBorders = (car) => {
@@ -203,6 +210,33 @@ function ListOfCarActions({ cars, setCars }) {
     setIsCarCrash(false);
   };
 
+  const handleMouseOver = (funcName, numberOfSteps) => {
+    const updatedCar = Car[funcName](selectedCar, numberOfSteps);
+    const updatedCells = gridCells.map(cell => {
+      if (updatedCar.moves.includes(cell.id)) {
+        return {
+          ...cell,
+          style: {
+            ...cell.style,
+            boxShadow: '0px 0px 4px 2px green, 0px 0px 20px 2px green inset',
+          },
+        };
+      }
+      return cell;
+    });
+
+    setGridCells(updatedCells);
+  };
+
+  const handleMouseOut = () => {
+    setGridCells(gridCells.map(cell => {
+      if (cell.style.boxShadow !== 'none') {
+        return { ...cell, style: { ...cell.style, boxShadow: 'none' } };
+      }
+      return cell;
+    }));
+  };
+
   return (
     <>
       {isCarCrash || isGameOver ? <div className={styles.toastBg} /> : null}
@@ -213,6 +247,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item1}
             onClick={turnForwardLeft}
             disabled={!canTurnForwardLeft()}
+            onMouseOver={() => handleMouseOver('calcTurnForwardLeft')}
+            onMouseOut={handleMouseOut}
           >
             &#8624;
           </button>
@@ -220,6 +256,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item2}
             onClick={turnForwardRight}
             disabled={!canTurnForwardRight()}
+            onMouseOver={() => handleMouseOver('calcTurnForwardRight')}
+            onMouseOut={handleMouseOut}
           >
             &#8625;
           </button>
@@ -228,6 +266,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item3}
             onClick={() => goForward(3)}
             disabled={!canGoForward(3)}
+            onMouseOver={() => handleMouseOver('calcStepsForward', 3)}
+            onMouseOut={handleMouseOut}
           >
             &#8593;&#8593;&#8593;
           </button>
@@ -235,6 +275,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item4}
             onClick={() => goForward(2)}
             disabled={!canGoForward(2)}
+            onMouseOver={() => handleMouseOver('calcStepsForward', 2)}
+            onMouseOut={handleMouseOut}
           >
             &#8593;&#8593;
           </button>
@@ -242,6 +284,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item5}
             onClick={() => goForward(1)}
             disabled={!canGoForward(1)}
+            onMouseOver={() => handleMouseOver('calcStepsForward', 1)}
+            onMouseOut={handleMouseOut}
           >
             &#8593;
           </button>
@@ -250,6 +294,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item6}
             onClick={goToLeftLane}
             disabled={!canGoToLeftLane()}
+            onMouseOver={() => handleMouseOver('calcStepToLeftLane')}
+            onMouseOut={handleMouseOut}
           >
             &#8598;
           </button>
@@ -257,6 +303,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item7}
             onClick={goToRightLane}
             disabled={!canGoToRightLane()}
+            onMouseOver={() => handleMouseOver('calcStepToRightLane')}
+            onMouseOut={handleMouseOut}
           >
             &#8599;
           </button>
@@ -267,6 +315,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item9}
             onClick={goOneStepBack}
             disabled={!canGoOneStepBack()}
+            onMouseOver={() => handleMouseOver('calcOneStepBack')}
+            onMouseOut={handleMouseOut}
           >
             &#8595;
           </button>
@@ -275,6 +325,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item10}
             onClick={turnBackLeft}
             disabled={!canTurnBackLeft()}
+            onMouseOver={() => handleMouseOver('calcTurnBackLeft')}
+            onMouseOut={handleMouseOut}
           >
             &#8629;
           </button>
@@ -282,6 +334,8 @@ function ListOfCarActions({ cars, setCars }) {
             className={styles.item11}
             onClick={turnBackRight}
             disabled={!canTurnBackRight()}
+            onMouseOver={() => handleMouseOver('calcTurnBackRight')}
+            onMouseOut={handleMouseOut}
           >
             &#8627;
           </button>
