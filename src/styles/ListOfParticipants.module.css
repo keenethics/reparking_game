@@ -1,12 +1,9 @@
 .container {
+  padding-top: 110px;
 }
 
 .grid {
   display: grid;
-  /*
-   * row-gap: 5px;
-   * column-gap: 5px;
-   */
   grid-template-columns: auto auto auto;
 }
 
@@ -34,17 +31,9 @@
 }
 
 .playerTurn {
-  /*
-   * background: lightgreen;
-   * background: #5cb85c;
-   */
   background-color: #dff0d8;
 }
 
 .playerPenalty {
-  /*
-   * background: lightcoral;
-   * background: #d9534f;
-   */
   background-color: #f2dede;
 }

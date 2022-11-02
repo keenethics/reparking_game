@@ -67,6 +67,7 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
       copy[victim.index] = { ...victim, penalty: victim.penalty + 1 };
     }
 
+    /*********************/
     let nextCar = copy.slice(updatedCar.index + 1).find(c => c.penalty === 0);
 
     if (nextCar) {
@@ -81,6 +82,7 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
         copy[nextCar.index] = { ...nextCar, isTurn: true };
       }
     }
+    /*********************/
 
     if (isCrash) {
       setOffenderBeforeMove({ ...selectedCar });
@@ -90,12 +92,35 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
       setCars(copy);
     }
 
+    /*********************/
     setGridCells(gridCells.map(cell => {
       if (cell.style.boxShadow !== 'none') {
         return { ...cell, style: { ...cell.style, boxShadow: 'none' } };
       }
       return cell;
     }));
+  };
+
+  const handleSkipTurn = () => {
+    let copy = [...cars];
+    copy[selectedCar.index] = { ...selectedCar, isTurn: false };
+
+    let nextCar = copy.slice(selectedCar.index + 1).find(c => c.penalty === 0);
+
+    if (nextCar) {
+      copy[nextCar.index] = { ...nextCar, isTurn: true };
+    } else {
+      copy = copy.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
+      nextCar = copy.find(c => c.penalty === 0);
+
+      if (!nextCar) {
+        setIsGameOver(true);
+      } else {
+        copy[nextCar.index] = { ...nextCar, isTurn: true };
+      }
+    }
+
+    setCars(copy);
   };
 
   const isCarWithinBorders = (car) => {
@@ -341,6 +366,14 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
           </button>
         </div>
 
+        <div className={styles.skipContainer}>
+          <button
+            className={styles.skipBtn}
+            onClick={handleSkipTurn}
+          >
+            Skip
+          </button>
+        </div>
         {isCarCrash && (
           <div className={styles.toastCarCrash}>
             <div className={styles.toastTitle}>Car crash</div>
