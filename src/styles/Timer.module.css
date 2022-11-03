@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.timerButton {
+  width: 46px;
+  height: 46px;
+  border: 3px solid black;
+  border-radius: 10px;
+  outline: none;
+  background-color: white;
+  color: black;
+  font-size: 27px;
+  margin-left: 10px;
+}
+
+.timerInput {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 86px;
+  height: 86px;
+  font-size: 40px;
+  font-weight: bold;
+  color: black;
+  background-color: white;
+  text-align: center;
+  border-radius: 50%;
+  border-top: 10px solid blue;
+  border-right: 10px solid red;
+  border-bottom: 10px solid red;
+  border-left: 10px solid blue;
+  outline: none;
+  box-sizing: border-box;
+}

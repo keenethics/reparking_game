@@ -1,8 +1,12 @@
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
+import AppContext from '../context/AppContext';
 
 import styles from '../styles/ListOfParticipants.module.css';
 
-function ListOfParticipants({ cars, setCars }) {
+function ListOfParticipants() {
+  const context = useContext(AppContext);
+  const { cars, setCars } = context;
+
   return (
     <div className={styles.container}>
       <div className={styles.grid}>

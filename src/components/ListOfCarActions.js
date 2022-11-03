@@ -1,17 +1,30 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import { Game, Car } from '../helpers';
+import AppContext from '../context/AppContext';
 import styles from '../styles/ListOfCarActions.module.css';
 
-function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
+function ListOfCarActions() {
   const [offenderBeforeMove, setOffenderBeforeMove] = useState(null);
   const [isCarCrash, setIsCarCrash] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
+  const context = useContext(AppContext);
+  const {
+    cars,
+    setCars,
+    boardCells,
+    setBoardCells,
+    initialTimer,
+    setTimer,
+    setIsTimerStopped,
+  } = context;
   const selectedCar = cars.find(item => item.isTurn);
 
   const makeMove = (updatedCar) => {
     let copy = [...cars];
     copy[updatedCar.index] = { ...updatedCar, isTurn: false };
+
+    // calculate cars positions
     copy = copy.map(c => {
       let rowIndex;
       let colIndex;
@@ -45,6 +58,7 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
           };
       }
     });
+    /*********************/
     let offender = null;
     let victim = null;
     let isCrash = false;
@@ -67,7 +81,7 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
       copy[victim.index] = { ...victim, penalty: victim.penalty + 1 };
     }
 
-    /*********************/
+    // pass a turn
     let nextCar = copy.slice(updatedCar.index + 1).find(c => c.penalty === 0);
 
     if (nextCar) {
@@ -88,12 +102,14 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
       setOffenderBeforeMove({ ...selectedCar });
       setCars(copy);
       setIsCarCrash(true);
+      setIsTimerStopped(true);
     } else {
       setCars(copy);
+      setTimer({ v: initialTimer.v });
     }
 
     /*********************/
-    setGridCells(gridCells.map(cell => {
+    setBoardCells(boardCells.map(cell => {
       if (cell.style.boxShadow !== 'none') {
         return { ...cell, style: { ...cell.style, boxShadow: 'none' } };
       }
@@ -121,6 +137,9 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
     }
 
     setCars(copy);
+    //flushSync(() => setIsStopped(true));
+    setTimer({ v: initialTimer.v });
+    //setIsStopped(false);
   };
 
   const isCarWithinBorders = (car) => {
@@ -233,11 +252,13 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
     setOffenderBeforeMove(null);
     setCars(copy);
     setIsCarCrash(false);
+    setIsTimerStopped(false);
+    setTimer({ v: initialTimer });
   };
 
   const handleMouseOver = (funcName, numberOfSteps) => {
     const updatedCar = Car[funcName](selectedCar, numberOfSteps);
-    const updatedCells = gridCells.map(cell => {
+    const updatedCells = boardCells.map(cell => {
       if (updatedCar.moves.includes(cell.id)) {
         return {
           ...cell,
@@ -250,11 +271,11 @@ function ListOfCarActions({ cars, setCars, gridCells, setGridCells }) {
       return cell;
     });
 
-    setGridCells(updatedCells);
+    setBoardCells(updatedCells);
   };
 
   const handleMouseOut = () => {
-    setGridCells(gridCells.map(cell => {
+    setBoardCells(boardCells.map(cell => {
       if (cell.style.boxShadow !== 'none') {
         return { ...cell, style: { ...cell.style, boxShadow: 'none' } };
       }

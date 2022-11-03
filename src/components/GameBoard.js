@@ -1,11 +1,37 @@
+import { useContext } from 'react';
+
+import Timer from './Timer';
 import CarModel from './CarModel';
 import Information from './Information';
 import { Game } from '../helpers';
+import AppContext from '../context/AppContext';
 import styles from '../styles/GameBoard.module.css'
 
-function GameBoard({ cars, gridCells }) {
+function GameBoard() {
+  const context = useContext(AppContext);
+  const {
+    cars,
+    boardCells,
+    initialTimer,
+    setInitialTimer,
+    timer,
+    setTimer,
+    isTimerStopped,
+    setIsTimerStopped,
+    goToNextCar,
+  } = context;
+
   return (
     <div className={styles.container}>
+      <Timer
+        initialTimer={initialTimer}
+        setInitialTimer={setInitialTimer}
+        timer={timer}
+        setTimer={setTimer}
+        isTimerStopped={isTimerStopped}
+        setIsTimerStopped={setIsTimerStopped}
+        goToNextCar={goToNextCar}
+      />
       <div
         className={styles.grid}
         style={{
@@ -15,7 +41,7 @@ function GameBoard({ cars, gridCells }) {
           gridTemplateRows: `repeat(${Game.numberOfCellsHorizontally}, ${Game.cellWidth}px)`,
         }}
       >
-        {gridCells.map((cell, idx) => (
+        {boardCells.map((cell, idx) => (
           <div
             key={cell.id}
             className={styles.cell}
