@@ -1,4 +1,4 @@
-# Reparking Game
+# Reparking Game v1.0.0
 
 ## Getting Started
 
