@@ -1,3 +1,3 @@
-# Reparking Game v2.1.0
+# Reparking Game v2.2.0
 
 ![Game view](game_view.png)

@@ -1,9 +1,11 @@
+import { Outlet } from 'react-router-dom';
+
 import styles from '../../styles/layouts/MainLayout.module.css';
 
-function MainLayout({ children }) {
+function MainLayout() {
   return (
     <div className={styles.container}>
-      {children}
+      <Outlet />
     </div>
   );
 }

@@ -1,0 +1,20 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: black;
+  background-color: white;
+  gap: 50px;
+}
+
+.title {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.content {
+  font-size: 25px;
+}
