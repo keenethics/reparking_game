@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rooms</title>
+    <style>
+      #root {
+        text-align: center;
+        margin-top: 50px;
+      }
+      #game-creation {
+        margin-bottom: 20px;
+      }
+    </style>
+  <head>
+  <body>
+    <div id="root">
+      <div>
+        <button id="game-creation">Create Game</button>
+      </div>
+      <div>
+        <a id="game-link"></a>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      const button = document.getElementById('game-creation');
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        socket.emit('game:create');
+      });
+
+      socket.on('game:create', (gameUrl) => {
+        const a = document.getElementById('game-link');
+        a.href = gameUrl;
+        a.textContent = gameUrl;
+      });
+    </script>
+  </body>
+</html>

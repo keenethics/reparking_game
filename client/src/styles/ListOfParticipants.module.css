@@ -1,0 +1,39 @@
+.container {
+  padding-top: 110px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.item1, .item2, .item3 {
+  text-align: center;
+}
+
+.item2 {
+  border: none;
+  padding: 3px 0;
+}
+
+.item1, .item2, .item3 {
+  border-bottom: 2px solid #ddd;
+}
+
+.item1 {
+  border-right: 2px solid #ddd;
+  padding: 3px 5px;
+}
+
+.item3 {
+  border-left: 2px solid #ddd;
+  padding: 3px 5px;
+}
+
+.playerTurn {
+  background-color: #dff0d8;
+}
+
+.playerPenalty {
+  background-color: #f2dede;
+}

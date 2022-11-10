@@ -1,0 +1,222 @@
+.container {
+  position: relative;
+  padding-top: 110px;
+}
+
+.toastBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.toastCarCrash {
+  position: absolute;
+  top: 250px;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  z-index: 100;
+  background-color: black;
+  border: 5px solid white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.toastGameOver {
+  position: absolute;
+  top: calc(100% / 2 - 100px);
+  left: calc(100% / 2 - 150px);
+  width: 300px;
+  height: 200px;
+  z-index: 100;
+  background-color: black;
+  border: 5px solid white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.toastTitle {
+  font-weight: bold;
+  color: white;
+  font-size: 30px;
+}
+
+.toastBtn {
+  background-color: white;
+  padding: 1px 1px;
+  border-radius: 50%;
+  border: 1px solid black;
+  color: black;
+  font-size: 39px;
+  font-weight: bold;
+  width: 60px;
+  height: 60px;
+  text-transform: uppercase;
+}
+
+.toastBtn:hover {
+  cursor: pointer;
+  background-color: #f0ad4e;
+}
+
+.toastBtn:disabled {
+  cursor: auto;
+  background-color: white;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 5px 60px;
+  background-image: url("../assets/car_gray.svg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+
+.item1,
+.item2,
+.item3,
+.item4,
+.item5,
+.item6,
+.item7,
+.item9,
+.item10,
+.item11 {
+  font-weight: bold;
+  font-size: 25px;
+  border-radius: 50%;
+  padding: 1px 1px;
+  border: 3px solid black;
+  width: 50px;
+  height: 50px;
+  outline: none;
+}
+
+.item1 {
+  grid-column: 1 / span 1;
+}
+
+.item2 {
+  grid-column: 3 / span 1;
+}
+
+.item3, .item4, .item5 {
+  grid-column: 2 / span 1;
+}
+
+.item5 {
+  margin-bottom: 10px;
+}
+
+.item6 {
+  grid-column: 1 / span 1;
+}
+
+.item7 {
+  grid-column: 3 / span 1;
+}
+
+.item8 {
+  grid-column: 2 / span 1;
+  font-weight: bold;
+  font-size: 40px;
+  color: black;
+  text-align: center;
+}
+
+.item9 {
+  grid-column: 2 / span 1;
+  margin-top: 85px;
+}
+
+.item10 {
+  grid-column: 1 / span 1;
+}
+
+.item11 {
+  grid-column: 3 / span 1;
+}
+
+.item12 {
+  grid-column: 2 / span 1;
+}
+
+.item1, .item2, .item3, .item4, .item5, .item6, .item7 {
+  background-color: #f0ad4e;
+}
+
+.item9, .item10, .item11 {
+  background-color: #31b0d5;
+}
+
+.item1:hover,
+.item2:hover,
+.item3:hover,
+.item4:hover,
+.item5:hover,
+.item6:hover,
+.item7:hover,
+.item9:hover,
+.item10:hover,
+.item11:hover {
+  color: white;
+  background-color: black;
+  cursor: pointer;
+}
+
+.item1:disabled,
+.item2:disabled,
+.item3:disabled,
+.item4:disabled,
+.item5:disabled,
+.item6:disabled,
+.item7:disabled,
+.item9:disabled,
+.item10:disabled,
+.item11:disabled {
+  color: gray;
+  background-color: lightgray;
+  cursor: auto;
+  border: 1px solid gray;
+}
+
+.skipContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.skipBtn {
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 50%;
+  padding: 0;
+  border: 3px solid black;
+  width: 54px;
+  height: 54px;
+  background-color: #f0ad4e;
+  outline: none;
+  background-color: white;
+  color: black;
+}
+
+.skipBtn:hover {
+  color: white;
+  background-color: black;
+  cursor: pointer;
+}
