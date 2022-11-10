@@ -3,11 +3,11 @@ import { useContext } from 'react';
 import Timer from './Timer';
 import CarModel from './CarModel';
 import Information from './Information';
-import { Game } from '../helpers';
-import AppContext from '../context/AppContext';
-import styles from '../styles/GameBoard.module.css'
+import { Game } from '../../../helpers';
+import AppContext from '../../../context/AppContext';
+import styles from '../../../styles/pages/GameRoom/Board.module.css';
 
-function GameBoard() {
+function Board() {
   const context = useContext(AppContext);
   const {
     cars,
@@ -57,4 +57,4 @@ function GameBoard() {
   );
 }
 
-export default GameBoard;
+export default Board;

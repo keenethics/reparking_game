@@ -5,8 +5,3 @@
   justify-content: center;
   align-items: center;
 }
-
-.content {
-  display: flex;
-  gap: 50px;
-}

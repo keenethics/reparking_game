@@ -1,8 +1,8 @@
 import { useState, useContext } from 'react';
 
-import { Game, Car } from '../helpers';
-import AppContext from '../context/AppContext';
-import styles from '../styles/ListOfCarActions.module.css';
+import { Game, Car } from '../../../helpers';
+import AppContext from '../../../context/AppContext';
+import styles from '../../../styles/pages/GameRoom/ListOfCarActions.module.css';
 
 function ListOfCarActions() {
   const [offenderBeforeMove, setOffenderBeforeMove] = useState(null);

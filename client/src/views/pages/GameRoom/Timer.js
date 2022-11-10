@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import styles from '../styles/Timer.module.css';
+import styles from '../../../styles/pages/GameRoom/Timer.module.css';
 
 function Timer ({
   initialTimer,

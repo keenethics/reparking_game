@@ -1,6 +1,6 @@
-import { Car } from '../helpers';
+import { Car } from '../../../helpers';
 
-import styles from '../styles/CarModel.module.css';
+import styles from '../../../styles/pages/GameRoom/CarModel.module.css';
 
 function CarModel({ car }) {
   const getCarRotation = () => {

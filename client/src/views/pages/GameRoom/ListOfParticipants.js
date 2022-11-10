@@ -1,7 +1,7 @@
 import { Fragment, useContext } from 'react';
-import AppContext from '../context/AppContext';
+import AppContext from '../../../context/AppContext';
 
-import styles from '../styles/ListOfParticipants.module.css';
+import styles from '../../../styles/pages/GameRoom/ListOfParticipants.module.css';
 
 function ListOfParticipants() {
   const context = useContext(AppContext);
