@@ -1,12 +1,3 @@
-# Reparking Game v1.0.0
-
-## Getting Started
-
-```
-git clone https://github.com/keenethics/reparking_game.git
-cd reparking_game
-npm install
-npm start
-```
+# Reparking Game v2.0.0
 
 ![Game view](game_view.png)
