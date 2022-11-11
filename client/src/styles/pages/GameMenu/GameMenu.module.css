@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 124px;
+  justify-content: space-between;
+}
+
+.button {
+  width: 160px;
+  height: 54px;
+  font-weight: bold;
+  font-size: 20px;
+  color: black;
+  border-radius: 10px;
+  border: 3px solid black;
+  outline: none;
+  background-color: #f0ad4e;
+  box-sizing: border-box;
+}
+
+.button:hover {
+  color: white;
+  background-color: black;
+  cursor: pointer;
+}
+
+.link {
+}

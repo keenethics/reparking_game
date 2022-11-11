@@ -5,13 +5,9 @@ const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, { cors: { origin: 'http://localhost:3000' } });
 
 const rooms = {};
-
-app.get('/game/create', (req, res) => {
-  res.sendFile(__dirname + '/game-create.html');
-});
 
 app.get('/game/:gameId', (req, res) => {
   res.sendFile(__dirname + '/game-join.html');
@@ -58,6 +54,7 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(8080, () => {
-  console.log('Listening on *:3000');
+const PORT = 8080;
+server.listen(PORT, () => {
+  console.log(`Listening on ${PORT}`);
 });
