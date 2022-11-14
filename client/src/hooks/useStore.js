@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { initialDataOfCars, Game } from '../helpers';
 
 const useStore = () => {
-  const [cars, setCars] = useState(initialDataOfCars);
+  //const [cars, setCars] = useState(initialDataOfCars);
+  const [cars, setCars] = useState([]);
   const [boardCells, setBoardCells] = useState(
     new Array(64)
       .fill()

@@ -14,7 +14,7 @@ const routes = [
         element: <GameMenu />,
       },
       {
-        path: '/game/:id',
+        path: '/game/:gameId',
         element: <GameRoom />,
       },
       {

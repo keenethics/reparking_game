@@ -4,9 +4,9 @@ import io from 'socket.io-client';
 
 import styles from '../../../styles/pages/GameMenu/GameMenu.module.css';
 
-const socket = io('http://localhost:8080');
-
 function GameMenu () {
+  // TODO: 2 sockets outside or inside in different comps cause BUG
+  const [socket] = useState(io('http://localhost:8080'));
   const [gameUrl, setGameUrl] = useState('');
 
   useEffect(() => {
