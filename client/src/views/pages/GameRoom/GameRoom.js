@@ -1,38 +1,33 @@
-import { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import io from 'socket.io-client';
 
 import AppContext from '../../../context/AppContext';
-// TODO: 2 sockets outside or inside in different comps cause BUG
-import socket from '../../../utils/socket';
 import ListOfParticipants from './ListOfParticipants';
 import Board from './Board.js';
 import ListOfCarActions from './ListOfCarActions';
 import styles from '../../../styles/pages/GameRoom/GameRoom.module.css';
 
+const socket = io('http://localhost:8080', {
+  auth: (cb) => {
+    const splitPathname = window.location.pathname.split('/');
+    const roomId = splitPathname[splitPathname.length - 1];
+    let userId = sessionStorage.getItem(roomId);
+    if (!userId) {
+      userId = uuidv4();
+      sessionStorage.setItem(roomId, userId);
+    }
+    cb({ roomId, userId });
+  },
+});
+
 function GameRoom () {
   const context = useContext(AppContext);
-  const { gameId } = useParams();
-  /*
-  const [socket] = useState(() => {
-    return io('http://localhost:8080', {
-      auth: (cb) => {
-        const roomId = gameId;
-        let userId = sessionStorage.getItem(roomId);
-        if (!userId) {
-          userId = uuidv4();
-          sessionStorage.setItem(roomId, userId);
-        }
-        cb({ roomId, userId });
-      },
-    });
-  });
-  */
 
   useEffect(() => {
     socket.on('connect', () => {
       console.log('+ connect');
-      socket.emit('game:join'); // <- TODO: test it
+      socket.emit('game:join');
     });
     socket.on('disconnect', () => {
       console.log('- disconnect');

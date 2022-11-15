@@ -1,8 +1,10 @@
+import { lazy } from 'react';
+
 import MainLayout from '../views/layouts/MainLayout';
 import ErrorBoundary from '../views/components/ErrorBoundary';
-import NoMatch from '../views/components/NoMatch';
-import GameMenu from '../views/pages/GameMenu/GameMenu';
-import GameRoom from '../views/pages/GameRoom/GameRoom';
+import NoMatch from '../views/pages/NoMatch';
+const GameMenu = lazy(() => import('../views/pages/GameMenu/GameMenu'));
+const GameRoom = lazy(() => import('../views/pages/GameRoom/GameRoom'));
 
 const routes = [
   {

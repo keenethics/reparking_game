@@ -1,4 +1,4 @@
-import styles from '../../styles/components/NoMatch.module.css';
+import styles from '../../styles/pages/NoMatch.module.css';
 
 function NoMatch () {
   return (

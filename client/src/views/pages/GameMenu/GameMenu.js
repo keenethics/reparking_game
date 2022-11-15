@@ -1,13 +1,14 @@
-import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
 import styles from '../../../styles/pages/GameMenu/GameMenu.module.css';
 
+const socket = io('http://localhost:8080');
+
 function GameMenu () {
-  // TODO: 2 sockets outside or inside in different comps cause BUG
-  const [socket] = useState(io('http://localhost:8080'));
   const [gameUrl, setGameUrl] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on('game:create', (url) => {
@@ -23,10 +24,19 @@ function GameMenu () {
     socket.emit('game:create');
   };
 
+  const goToGame = () => {
+    socket.disconnect();
+    navigate(gameUrl);
+  };
+
   return (
     <div className={styles.container}>
       <button className={styles.button} onClick={createGame}>Create Game</button>
-      <Link className={styles.link} to={gameUrl}>{gameUrl}</Link>
+      {gameUrl && (
+        <button className={styles.link} onClick={goToGame}>
+          {`http://localhost:3000${gameUrl}`}
+        </button>
+      )}
     </div>
   );
 }

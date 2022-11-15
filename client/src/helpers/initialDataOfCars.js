@@ -4,7 +4,7 @@ import TeamColor from './TeamColor';
 
 const { numberOfTeams, numberOfPlayersInTeam } = Game;
 
-function randomizePositionsOfCars(cars) {
+function randomizeStartPositions(cars) {
   const team1 = cars.filter(car => car.teamColor === TeamColor.blue);
   const team2 = cars.filter(car => car.teamColor === TeamColor.red);
   const randomizeSorting = (carA, carB) => {
@@ -50,6 +50,6 @@ let initialDataOfCars  = new Array(numberOfTeams * numberOfPlayersInTeam)
       };
     });
 
-initialDataOfCars = randomizePositionsOfCars(initialDataOfCars);
+initialDataOfCars = randomizeStartPositions(initialDataOfCars);
 
 export default initialDataOfCars;

@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import AppContext from '../../context/AppContext';
 import useStore from '../../hooks/useStore';
 import AppRouter from '../../router/AppRouter';
@@ -7,7 +9,9 @@ function App() {
 
   return (
     <AppContext.Provider value={store}>
-      <AppRouter />
+      <Suspense fallback={<div>Loading...</div>}>
+        <AppRouter />
+      </Suspense>
     </AppContext.Provider>
   );
 }
