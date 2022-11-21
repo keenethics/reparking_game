@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import rooms from './store/rooms';
 import initialDataOfCars from './helpers/initialDataOfCars';
-import Car from './helpers/Car';
-import Game from './helpers/Game';
+import Car from '../../shared/Car'; // TODO: refactor
+import Game from '../../shared/Game'; // TODO: refactor
 
 const expressApp = express();
 const httpServer = http.createServer(expressApp);
@@ -200,42 +200,42 @@ io.on('connection', (socket) => {
       const copyOfCar = JSON.parse(JSON.stringify(selectedCar));
 
       switch(moveType) {
-        case 'goForward': {
+        case Car.MoveType.goForward: {
           const shiftedCar = Car.calcStepsForward(copyOfCar, numberOfSteps);
           makeMove(shiftedCar, roomId);
           break;
         }
-        case 'goOneStepBack': {
+        case Car.MoveType.goOneStepBack: {
           const shiftedCar = Car.calcOneStepBack(copyOfCar);
           makeMove(shiftedCar, roomId);
           break;
         }
-        case 'goToLeftLane': {
+        case Car.MoveType.goToLeftLane: {
           const shiftedCar = Car.calcStepToLeftLane(copyOfCar);
           makeMove(shiftedCar, roomId);
           break;
         }
-        case 'goToRightLane': {
+        case Car.MoveType.goToRightLane: {
           const shiftedCar = Car.calcStepToRightLane(copyOfCar);
           makeMove(shiftedCar, roomId);
           break;
         }
-        case 'turnForwardLeft': {
+        case Car.MoveType.turnForwardLeft: {
           const shiftedCar = Car.calcTurnForwardLeft(copyOfCar);
           makeMove(shiftedCar, roomId);
           break;
         }
-        case 'turnForwardRight': {
+        case Car.MoveType.turnForwardRight: {
           const shiftedCar = Car.calcTurnForwardRight(copyOfCar);
           makeMove(shiftedCar, roomId);
           break;
         }
-        case 'turnBackLeft': {
+        case Car.MoveType.turnBackLeft: {
           const shiftedCar = Car.calcTurnBackLeft(copyOfCar);
           makeMove(shiftedCar, roomId);
           break;
         }
-        case 'turnBackRight': {
+        case Car.MoveType.turnBackRight: {
           const shiftedCar = Car.calcTurnBackRight(copyOfCar);
           makeMove(shiftedCar, roomId);
           break;

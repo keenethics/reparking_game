@@ -1,5 +1,5 @@
-import Car from './Car';
-import Game from './Game';
+import Car from '../../../shared/Car';
+import Game from '../../../shared/Game';
 import TeamColor from './TeamColor';
 // TODO: move to shared and setup babel
 

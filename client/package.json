@@ -10,7 +10,8 @@
     "react-scripts": "5.0.1",
     "socket.io-client": "^4.5.3",
     "uuid": "^9.0.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "@reparking_game/shared": "file:../shared"
   },
   "scripts": {
     "start:dev-client": "DISABLE_ESLINT_PLUGIN=true react-scripts start",

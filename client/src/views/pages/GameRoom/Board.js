@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import Timer from './Timer';
 import CarModel from './CarModel';
 import Information from './Information';
-import { Game } from '../../../helpers';
+import Game from '@reparking_game/shared/Game';
 import AppContext from '../../../context/AppContext';
 import styles from '../../../styles/pages/GameRoom/Board.module.css';
 

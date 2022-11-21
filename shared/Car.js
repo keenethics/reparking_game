@@ -10,6 +10,16 @@ const Car = {
     left: 'left',
     right: 'right',
   },
+  MoveType: {
+    goForward: 'go_forward',
+    goOneStepBack: 'go_one_step_back',
+    goToLeftLane: 'go_to_left_lane',
+    goToRightLane: 'go_to_right_lane',
+    turnForwardLeft: 'turn_forward_left',
+    turnForwardRight: 'turn_forward_right',
+    turnBackLeft: 'turn_back_left',
+    turnBackRight: 'turn_back_right',
+  },
   calcStepsForward(car, numberOfSteps) {
     if (!car) return;
 

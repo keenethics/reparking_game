@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 
-import { Game, Car } from '../../../helpers';
+import Game from '@reparking_game/shared/Game';
+import Car from '@reparking_game/shared/Car';
 import AppContext from '../../../context/AppContext';
 import styles from '../../../styles/pages/GameRoom/ListOfCarActions.module.css';
 
@@ -209,7 +210,7 @@ function ListOfCarActions({ socket, userId }) {
   };
 
   const goForward = (numberOfSteps) => {
-    socket.emit('car:make-move', 'goForward', numberOfSteps);
+    socket.emit('car:make-move', Car.MoveType.goForward, numberOfSteps);
 
     /* TODO: remove cells highlight after click on each action
     setBoardCells(boardCells.map(cell => {
@@ -222,31 +223,31 @@ function ListOfCarActions({ socket, userId }) {
   };
 
   const goOneStepBack = () => {
-    socket.emit('car:make-move', 'goOneStepBack');
+    socket.emit('car:make-move', Car.MoveType.goOneStepBack);
   };
 
   const goToLeftLane = () => {
-    socket.emit('car:make-move', 'goToLeftLane');
+    socket.emit('car:make-move', Car.MoveType.goToLeftLane);
   };
 
   const goToRightLane = () => {
-    socket.emit('car:make-move', 'goToRightLane');
+    socket.emit('car:make-move', Car.MoveType.goToRightLane);
   };
 
   const turnForwardLeft = () => {
-    socket.emit('car:make-move', 'turnForwardLeft');
+    socket.emit('car:make-move', Car.MoveType.turnForwardLeft);
   };
 
   const turnForwardRight = () => {
-    socket.emit('car:make-move', 'turnForwardRight');
+    socket.emit('car:make-move', Car.MoveType.turnForwardRight);
   };
 
   const turnBackLeft = () => {
-    socket.emit('car:make-move', 'turnBackLeft');
+    socket.emit('car:make-move', Car.MoveType.turnBackLeft);
   };
 
   const turnBackRight = () => {
-    socket.emit('car:make-move', 'turnBackRight');
+    socket.emit('car:make-move', Car.MoveType.turnBackRight);
   };
   /****************************************/
 

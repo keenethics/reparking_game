@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Game } from '../helpers';
+import Game from '@reparking_game/shared/Game';
 
 const useStore = () => {
   const [cars, setCars] = useState([]);

@@ -1,4 +1,4 @@
-import { Car } from '../../../helpers';
+import Car from '@reparking_game/shared/Car';
 
 import styles from '../../../styles/pages/GameRoom/CarModel.module.css';
 

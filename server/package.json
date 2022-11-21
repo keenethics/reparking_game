@@ -1,7 +1,8 @@
 {
   "name": "server",
   "scripts": {
-    "start:dev-server": "nodemon --delay 2500ms --exec babel-node src/index.js",
+    "babel-node": "babel-node --only src --only ../shared src/index.js",
+    "start:dev-server": "nodemon --delay 2500ms --watch src --watch ../shared --exec npm run babel-node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
