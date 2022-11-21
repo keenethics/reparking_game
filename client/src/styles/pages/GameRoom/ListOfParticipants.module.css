@@ -4,28 +4,33 @@
 
 .grid {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto auto;
 }
 
-.item1, .item2, .item3 {
+.item1, .item2, .item3, .item4 {
   text-align: center;
-}
-
-.item2 {
-  border: none;
-  padding: 3px 0;
-}
-
-.item1, .item2, .item3 {
-  border-bottom: 2px solid #ddd;
 }
 
 .item1 {
   border-right: 2px solid #ddd;
-  padding: 3px 5px;
+  padding: 6px;
 }
 
 .item3 {
+  border: none;
+  padding: 3px 0;
+}
+
+.item1, .item2, .item3, .item4 {
+  border-bottom: 2px solid #ddd;
+}
+
+.item2 {
+  border-right: 2px solid #ddd;
+  padding: 3px 5px;
+}
+
+.item4 {
   border-left: 2px solid #ddd;
   padding: 3px 5px;
 }
@@ -36,4 +41,18 @@
 
 .playerPenalty {
   background-color: #f2dede;
+}
+
+.online {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background-color: lightgreen;
+}
+
+.offline {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background-color: lightgray;
 }

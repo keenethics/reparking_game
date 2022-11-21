@@ -4,16 +4,18 @@ import { Game, Car } from '../../../helpers';
 import AppContext from '../../../context/AppContext';
 import styles from '../../../styles/pages/GameRoom/ListOfCarActions.module.css';
 
-function ListOfCarActions() {
-  const [offenderBeforeMove, setOffenderBeforeMove] = useState(null);
-  const [isCarCrash, setIsCarCrash] = useState(false);
+function ListOfCarActions({ socket, userId }) {
   const [isGameOver, setIsGameOver] = useState(false);
   const context = useContext(AppContext);
   const {
+    isGameStarted,
     cars,
     setCars,
     boardCells,
     setBoardCells,
+    isCarCrash,
+    setIsCarCrash,
+    offenderBeforeMove,
     initialTimer,
     setTimer,
     setIsTimerStopped,
@@ -99,7 +101,7 @@ function ListOfCarActions() {
     /*********************/
 
     if (isCrash) {
-      setOffenderBeforeMove({ ...selectedCar });
+      // setOffenderBeforeMove({ ...selectedCar });
       setCars(copy);
       setIsCarCrash(true);
       setIsTimerStopped(true);
@@ -142,6 +144,11 @@ function ListOfCarActions() {
     //setIsStopped(false);
   };
 
+  /*********************************/
+  const hasCarOwnerTurn = () => {
+    return selectedCar ? selectedCar.userId === userId : false;
+  };
+
   const isCarWithinBorders = (car) => {
     if (!car) return false;
 
@@ -161,19 +168,9 @@ function ListOfCarActions() {
     }
   };
 
-  const goForward = (numberOfSteps) => {
-    const updatedCar = Car.calcStepsForward(selectedCar, numberOfSteps);
-    makeMove(updatedCar);
-  };
-
   const canGoForward = (numberOfSteps) => {
     const updatedCar = Car.calcStepsForward(selectedCar, numberOfSteps);
     return isCarWithinBorders(updatedCar);
-  };
-
-  const goOneStepBack = () => {
-    const updatedCar = Car.calcOneStepBack(selectedCar);
-    makeMove(updatedCar);
   };
 
   const canGoOneStepBack = () => {
@@ -181,19 +178,9 @@ function ListOfCarActions() {
     return isCarWithinBorders(updatedCar);
   };
 
-  const goToLeftLane = () => {
-    const updatedCar = Car.calcStepToLeftLane(selectedCar);
-    makeMove(updatedCar);
-  };
-
   const canGoToLeftLane = () => {
     const updatedCar = Car.calcStepToLeftLane(selectedCar);
     return isCarWithinBorders(updatedCar);
-  };
-
-  const goToRightLane = () => {
-    const updatedCar = Car.calcStepToRightLane(selectedCar);
-    makeMove(updatedCar);
   };
 
   const canGoToRightLane = () => {
@@ -201,19 +188,9 @@ function ListOfCarActions() {
     return isCarWithinBorders(updatedCar);
   };
 
-  const turnForwardLeft = () => {
-    const updatedCar = Car.calcTurnForwardLeft(selectedCar);
-    makeMove(updatedCar);
-  };
-
   const canTurnForwardLeft = () => {
     const updatedCar = Car.calcTurnForwardLeft(selectedCar);
     return isCarWithinBorders(updatedCar);
-  };
-
-  const turnForwardRight = () => {
-    const updatedCar = Car.calcTurnForwardRight(selectedCar);
-    makeMove(updatedCar);
   };
 
   const canTurnForwardRight = () => {
@@ -221,19 +198,9 @@ function ListOfCarActions() {
     return isCarWithinBorders(updatedCar);
   };
 
-  const turnBackLeft = () => {
-    const updatedCar = Car.calcTurnBackLeft(selectedCar);
-    makeMove(updatedCar);
-  };
-
   const canTurnBackLeft = () => {
     const updatedCar = Car.calcTurnBackLeft(selectedCar);
     return isCarWithinBorders(updatedCar);
-  };
-
-  const turnBackRight = () => {
-    const updatedCar = Car.calcTurnBackRight(selectedCar);
-    makeMove(updatedCar);
   };
 
   const canTurnBackRight = () => {
@@ -241,21 +208,53 @@ function ListOfCarActions() {
     return isCarWithinBorders(updatedCar);
   };
 
-  const handleCarCrash = () => {
-    const copy = [...cars];
-    copy[offenderBeforeMove.index] = {
-      ...copy[offenderBeforeMove.index],
-      direction: offenderBeforeMove.direction,
-      coordinate: offenderBeforeMove.coordinate,
-    };
-    delete copy[offenderBeforeMove.index].moves;
-    setOffenderBeforeMove(null);
-    setCars(copy);
-    setIsCarCrash(false);
-    setIsTimerStopped(false);
-    setTimer({ v: initialTimer });
+  const goForward = (numberOfSteps) => {
+    socket.emit('car:make-move', 'goForward', numberOfSteps);
+
+    /* TODO: remove cells highlight after click on each action
+    setBoardCells(boardCells.map(cell => {
+      if (cell.style.boxShadow !== 'none') {
+        return { ...cell, style: { ...cell.style, boxShadow: 'none' } };
+      }
+      return cell;
+    }));
+    */
   };
 
+  const goOneStepBack = () => {
+    socket.emit('car:make-move', 'goOneStepBack');
+  };
+
+  const goToLeftLane = () => {
+    socket.emit('car:make-move', 'goToLeftLane');
+  };
+
+  const goToRightLane = () => {
+    socket.emit('car:make-move', 'goToRightLane');
+  };
+
+  const turnForwardLeft = () => {
+    socket.emit('car:make-move', 'turnForwardLeft');
+  };
+
+  const turnForwardRight = () => {
+    socket.emit('car:make-move', 'turnForwardRight');
+  };
+
+  const turnBackLeft = () => {
+    socket.emit('car:make-move', 'turnBackLeft');
+  };
+
+  const turnBackRight = () => {
+    socket.emit('car:make-move', 'turnBackRight');
+  };
+  /****************************************/
+
+  const handleCarCrash = () => {
+    socket.emit('car:crash');
+  };
+
+  // TODO: if a button is disabled then this function mustn't run
   const handleMouseOver = (funcName, numberOfSteps) => {
     const updatedCar = Car[funcName](selectedCar, numberOfSteps);
     const updatedCells = boardCells.map(cell => {
@@ -274,6 +273,7 @@ function ListOfCarActions() {
     setBoardCells(updatedCells);
   };
 
+  // TODO: if a button is disabled then this function mustn't run
   const handleMouseOut = () => {
     setBoardCells(boardCells.map(cell => {
       if (cell.style.boxShadow !== 'none') {
@@ -292,7 +292,7 @@ function ListOfCarActions() {
           <button
             className={styles.item1}
             onClick={turnForwardLeft}
-            disabled={!canTurnForwardLeft()}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canTurnForwardLeft()}
             onMouseOver={() => handleMouseOver('calcTurnForwardLeft')}
             onMouseOut={handleMouseOut}
           >
@@ -301,7 +301,7 @@ function ListOfCarActions() {
           <button
             className={styles.item2}
             onClick={turnForwardRight}
-            disabled={!canTurnForwardRight()}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canTurnForwardRight()}
             onMouseOver={() => handleMouseOver('calcTurnForwardRight')}
             onMouseOut={handleMouseOut}
           >
@@ -311,7 +311,7 @@ function ListOfCarActions() {
           <button
             className={styles.item3}
             onClick={() => goForward(3)}
-            disabled={!canGoForward(3)}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canGoForward(3)}
             onMouseOver={() => handleMouseOver('calcStepsForward', 3)}
             onMouseOut={handleMouseOut}
           >
@@ -320,7 +320,7 @@ function ListOfCarActions() {
           <button
             className={styles.item4}
             onClick={() => goForward(2)}
-            disabled={!canGoForward(2)}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canGoForward(2)}
             onMouseOver={() => handleMouseOver('calcStepsForward', 2)}
             onMouseOut={handleMouseOut}
           >
@@ -329,7 +329,7 @@ function ListOfCarActions() {
           <button
             className={styles.item5}
             onClick={() => goForward(1)}
-            disabled={!canGoForward(1)}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canGoForward(1)}
             onMouseOver={() => handleMouseOver('calcStepsForward', 1)}
             onMouseOut={handleMouseOut}
           >
@@ -339,7 +339,7 @@ function ListOfCarActions() {
           <button
             className={styles.item6}
             onClick={goToLeftLane}
-            disabled={!canGoToLeftLane()}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canGoToLeftLane()}
             onMouseOver={() => handleMouseOver('calcStepToLeftLane')}
             onMouseOut={handleMouseOut}
           >
@@ -348,7 +348,7 @@ function ListOfCarActions() {
           <button
             className={styles.item7}
             onClick={goToRightLane}
-            disabled={!canGoToRightLane()}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canGoToRightLane()}
             onMouseOver={() => handleMouseOver('calcStepToRightLane')}
             onMouseOut={handleMouseOut}
           >
@@ -360,7 +360,7 @@ function ListOfCarActions() {
           <button
             className={styles.item9}
             onClick={goOneStepBack}
-            disabled={!canGoOneStepBack()}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canGoOneStepBack()}
             onMouseOver={() => handleMouseOver('calcOneStepBack')}
             onMouseOut={handleMouseOut}
           >
@@ -370,7 +370,7 @@ function ListOfCarActions() {
           <button
             className={styles.item10}
             onClick={turnBackLeft}
-            disabled={!canTurnBackLeft()}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canTurnBackLeft()}
             onMouseOver={() => handleMouseOver('calcTurnBackLeft')}
             onMouseOut={handleMouseOut}
           >
@@ -379,7 +379,7 @@ function ListOfCarActions() {
           <button
             className={styles.item11}
             onClick={turnBackRight}
-            disabled={!canTurnBackRight()}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash || !canTurnBackRight()}
             onMouseOver={() => handleMouseOver('calcTurnBackRight')}
             onMouseOut={handleMouseOut}
           >
@@ -391,6 +391,7 @@ function ListOfCarActions() {
           <button
             className={styles.skipBtn}
             onClick={handleSkipTurn}
+            disabled={!isGameStarted || !hasCarOwnerTurn() || isCarCrash}
           >
             Skip
           </button>
@@ -398,7 +399,9 @@ function ListOfCarActions() {
         {isCarCrash && (
           <div className={styles.toastCarCrash}>
             <div className={styles.toastTitle}>Car crash</div>
-            <button className={styles.toastBtn} onClick={handleCarCrash}>&#128110;</button>
+            {offenderBeforeMove?.userId === userId && (
+              <button className={styles.toastBtn} onClick={handleCarCrash}>&#128110;</button>
+            )}
           </div>
         )}
       </div>

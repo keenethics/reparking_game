@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { initialDataOfCars, Game } from '../helpers';
+import { Game } from '../helpers';
 
 const useStore = () => {
-  //const [cars, setCars] = useState(initialDataOfCars);
   const [cars, setCars] = useState([]);
   const [boardCells, setBoardCells] = useState(
     new Array(64)
@@ -21,6 +20,9 @@ const useStore = () => {
         };
       })
   );
+  const [isGameStarted, setIsGameStarted] = useState(true); // TODO
+  const [isCarCrash, setIsCarCrash] = useState(false);
+  const [offenderBeforeMove, setOffenderBeforeMove] = useState(null);
   const [initialTimer, setInitialTimer] = useState({ v: 30 });
   const [timer, setTimer] = useState({ v: 30 });
   const [isTimerStopped, setIsTimerStopped] = useState(true);
@@ -53,6 +55,12 @@ const useStore = () => {
     setCars,
     boardCells,
     setBoardCells,
+    isGameStarted,
+    setIsGameStarted,
+    isCarCrash,
+    setIsCarCrash,
+    offenderBeforeMove,
+    setOffenderBeforeMove,
     initialTimer,
     setInitialTimer,
     timer,

@@ -1,6 +1,7 @@
 import Car from './Car';
 import Game from './Game';
 import TeamColor from './TeamColor';
+// TODO: move to shared and setup babel
 
 const { numberOfTeams, numberOfPlayersInTeam } = Game;
 
@@ -47,6 +48,7 @@ let initialDataOfCars  = new Array(numberOfTeams * numberOfPlayersInTeam)
         direction,
         penalty: 0,
         isTurn: idx > 0 ? false : true,
+        isOnline: false,
       };
     });
 
