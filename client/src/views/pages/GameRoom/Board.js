@@ -7,9 +7,11 @@ import Game from '@reparking_game/shared/Game';
 import AppContext from '../../../context/AppContext';
 import styles from '../../../styles/pages/GameRoom/Board.module.css';
 
-function Board() {
+function Board({ socket, userId }) {
   const context = useContext(AppContext);
   const {
+    isGameStarted,
+    isCarCrash,
     cars,
     boardCells,
     initialTimer,
@@ -18,19 +20,22 @@ function Board() {
     setTimer,
     isTimerStopped,
     setIsTimerStopped,
-    goToNextCar,
   } = context;
 
   return (
     <div className={styles.container}>
       <Timer
+        userId={userId}
+        socket={socket}
+        isGameStarted={isGameStarted}
+        isCarCrash={isCarCrash}
         initialTimer={initialTimer}
         setInitialTimer={setInitialTimer}
         timer={timer}
         setTimer={setTimer}
         isTimerStopped={isTimerStopped}
         setIsTimerStopped={setIsTimerStopped}
-        goToNextCar={goToNextCar}
+        cars={cars}
       />
       <div
         className={styles.grid}

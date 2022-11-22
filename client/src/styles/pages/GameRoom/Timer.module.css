@@ -17,6 +17,10 @@
   margin-left: 10px;
 }
 
+.timerButton:hover {
+  cursor: pointer;
+}
+
 .timerInput {
   display: flex;
   justify-content: center;

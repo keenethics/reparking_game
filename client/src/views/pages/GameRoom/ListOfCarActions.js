@@ -15,11 +15,7 @@ function ListOfCarActions({ socket, userId }) {
     boardCells,
     setBoardCells,
     isCarCrash,
-    setIsCarCrash,
     offenderBeforeMove,
-    initialTimer,
-    setTimer,
-    setIsTimerStopped,
   } = context;
   const selectedCar = cars.find(item => item.isTurn);
 
@@ -27,7 +23,6 @@ function ListOfCarActions({ socket, userId }) {
     socket.emit('car:skip-move');
   };
 
-  /*********************************/
   const hasCarOwnerTurn = () => {
     return selectedCar ? selectedCar.userId === userId : false;
   };
@@ -131,7 +126,6 @@ function ListOfCarActions({ socket, userId }) {
   const turnBackRight = () => {
     socket.emit('car:make-move', Car.MoveType.turnBackRight);
   };
-  /****************************************/
 
   const handleCarCrash = () => {
     socket.emit('car:crash');

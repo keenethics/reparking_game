@@ -1,7 +1,6 @@
 import Car from '../../../shared/Car';
 import Game from '../../../shared/Game';
 import TeamColor from './TeamColor';
-// TODO: move to shared and setup babel
 
 const { numberOfTeams, numberOfPlayersInTeam } = Game;
 
@@ -33,24 +32,24 @@ function randomizeStartPositions(cars) {
   });
 }
 
-let initialDataOfCars  = new Array(numberOfTeams * numberOfPlayersInTeam)
-    .fill()
-    .map((item, idx) => {
-      const name = `Player${idx + 1}`;
-      const teamColor = idx % 2 === 0 ? TeamColor.blue : TeamColor.red;
-      const direction = idx % 2 === 0 ? Car.Direction.down : Car.Direction.up;
+let initialDataOfCars = new Array(numberOfTeams * numberOfPlayersInTeam)
+  .fill()
+  .map((item, idx) => {
+    const name = `Player${idx + 1}`;
+    const teamColor = idx % 2 === 0 ? TeamColor.blue : TeamColor.red;
+    const direction = idx % 2 === 0 ? Car.Direction.down : Car.Direction.up;
 
-      return {
-        index: idx,
-        name,
-        number: idx + 1,
-        teamColor,
-        direction,
-        penalty: 0,
-        isTurn: idx > 0 ? false : true,
-        isOnline: false,
-      };
-    });
+    return {
+      index: idx,
+      name,
+      number: idx + 1,
+      teamColor,
+      direction,
+      penalty: 0,
+      isTurn: idx > 0 ? false : true,
+      isOnline: false,
+    };
+  });
 
 initialDataOfCars = randomizeStartPositions(initialDataOfCars);
 

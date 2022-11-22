@@ -18,7 +18,6 @@ const io = new Server(httpServer, {
 
 const PORT = 8080; // TODO: env
 
-
 // TODO: refactor
 const makeMove = (shiftedCar, roomId) => {
   const assignedCars = rooms[roomId].assignedCars;
@@ -60,9 +59,9 @@ const makeMove = (shiftedCar, roomId) => {
         };
     }
   });
-  /*********************/
+  /* ******************* */
 
-  /********** is there car crash ***********/
+  /* ********* is there car crash ********** */
   let offender = null;
   let victim = null;
   let isCrash = false;
@@ -85,7 +84,7 @@ const makeMove = (shiftedCar, roomId) => {
     copyOfCars[victim.index] = { ...victim, penalty: victim.penalty + 1 };
   }
 
-  /********* pass a turn **********/
+  /* ******** pass a turn ********* */
   const nextCarInRound = copyOfCars.slice(shiftedCar.index + 1).find(c => c.penalty === 0);
 
   if (nextCarInRound) {
@@ -100,7 +99,7 @@ const makeMove = (shiftedCar, roomId) => {
       copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, isTurn: true };
     }
   }
-  /*********************/
+  /* ******************* */
 
   if (isCrash) {
     rooms[roomId].isCarCrash = true;
@@ -115,8 +114,6 @@ const makeMove = (shiftedCar, roomId) => {
 
   // TODO: setBoardCells boxshadow: none
 };
-
-
 
 io.use((socket, next) => {
   const { roomId } = socket.handshake.auth;
@@ -151,6 +148,7 @@ io.on('connection', (socket) => {
       isGameStarted: false,
       isCarCrash: false,
       offenderBeforeMove: null,
+      timer: 30,
     };
     const gameUrl = `/game/${randomRoomId}`;
 
@@ -172,6 +170,7 @@ io.on('connection', (socket) => {
           ...room.initialCars[room.assignedCars.length],
           isOnline: true,
           userId,
+          isLeader: rooms[roomId].assignedCars.length === 0 ? true : false,
         },
       );
     } else {
@@ -180,7 +179,21 @@ io.on('connection', (socket) => {
 
     console.log('game:join - rooms: ', rooms);
 
-    io.to(roomId).emit('game:join', rooms[roomId].assignedCars);
+    io.to(roomId).emit(
+      'game:join',
+      rooms[roomId].assignedCars,
+      rooms[roomId].isGameStarted,
+      rooms[roomId].timer,
+    );
+  });
+
+  socket.on('game:start', (timer) => {
+    const { roomId, userId } = socket.handshake.auth;
+
+    rooms[roomId].timer = timer;
+    rooms[roomId].isGameStarted = true;
+
+    io.to(roomId).emit('game:start', rooms[roomId].isGameStarted, rooms[roomId].timer);
   });
 
   socket.on('car:change-name', (name) => {
@@ -250,6 +263,7 @@ io.on('connection', (socket) => {
       rooms[roomId].assignedCars,
       rooms[roomId].isCarCrash,
       rooms[roomId].offenderBeforeMove,
+      rooms[roomId].timer,
     );
   });
 
@@ -274,6 +288,7 @@ io.on('connection', (socket) => {
       room.assignedCars,
       room.isCarCrash,
       room.offenderBeforeMove,
+      room.timer,
     );
   });
 
@@ -300,15 +315,15 @@ io.on('connection', (socket) => {
     }
     rooms[roomId].assignedCars = copyOfCars;
 
-    //flushSync(() => setIsStopped(true)); // TODO: fallback
-    // setTimer({ v: initialTimer.v });
-    //setIsStopped(false); // TODO: fallback
+    // flushSync(() => setIsStopped(true)); // TODO: fallback
+    // setTimer({ v: initialTimer.v }); // TODO: v0
+    // setIsStopped(false); // TODO: fallback
 
-    io.to(roomId).emit('car:skip-move', rooms[roomId].assignedCars);
+    io.to(roomId).emit('car:skip-move', rooms[roomId].assignedCars, rooms[roomId].timer);
   });
 
   socket.on('disconnect', () => {
-    console.log('- user disconnected', socket.id)
+    console.log('- user disconnected', socket.id);
     const { roomId, userId } = socket.handshake.auth;
     if (roomId && userId) {
       const assignedCar = rooms[roomId].assignedCars.find(item => item.userId === userId);

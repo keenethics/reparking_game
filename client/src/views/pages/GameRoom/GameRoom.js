@@ -58,8 +58,15 @@ function GameRoom () {
     });
     */
 
-    socket.on('game:join', (dataOfCars) => {
+    socket.on('game:join', (dataOfCars, isGameStarted, timer) => {
       context.setCars(dataOfCars);
+      context.setIsGameStarted(isGameStarted);
+      context.setTimer({ v: timer });
+    });
+
+    socket.on('game:start', (isGameStarted, timer) => {
+      context.setIsGameStarted(isGameStarted);
+      context.setTimer({ v: timer });
     });
 
     socket.on('game:disconnect', (dataOfCars) => {
@@ -70,20 +77,23 @@ function GameRoom () {
       context.setCars(dataOfCars);
     });
 
-    socket.on('car:make-move', (dataOfCars, isCarCrash, offenderBeforeMove) => {
+    socket.on('car:make-move', (dataOfCars, isCarCrash, offenderBeforeMove, timer) => {
       context.setCars(dataOfCars);
       context.setIsCarCrash(isCarCrash);
       context.setOffenderBeforeMove(offenderBeforeMove);
+      context.setTimer({ v: timer });
     });
 
-    socket.on('car:crash', (dataOfCars, isCarCrash, offenderBeforeMove) => {
+    socket.on('car:crash', (dataOfCars, isCarCrash, offenderBeforeMove, timer) => {
       context.setCars(dataOfCars);
       context.setIsCarCrash(isCarCrash);
       context.setOffenderBeforeMove(offenderBeforeMove);
+      context.setTimer({ v: timer });
     });
 
-    socket.on('car:skip-move', (dataOfCars) => {
+    socket.on('car:skip-move', (dataOfCars, timer) => {
       context.setCars(dataOfCars);
+      context.setTimer({ v: timer });
     });
 
     return () => {
@@ -91,6 +101,7 @@ function GameRoom () {
       socket.off('disconnect');
       //socket.off('connect_error');
       socket.off('game:join');
+      socket.off('game:start');
       socket.off('game:disconnect');
       socket.off('car:change-name');
       socket.off('car:make-move');
@@ -107,7 +118,7 @@ function GameRoom () {
   return (
     <div className={styles.container}>
       <ListOfParticipants socket={socket} userId={userId} />
-      <Board />
+      <Board socket={socket} userId={userId} />
       <ListOfCarActions socket={socket} userId={userId} />
     </div>
   );

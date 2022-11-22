@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Game from '@reparking_game/shared/Game';
 
 const useStore = () => {
+  const [isGameStarted, setIsGameStarted] = useState(false);
   const [cars, setCars] = useState([]);
   const [boardCells, setBoardCells] = useState(
     new Array(64)
@@ -20,35 +21,11 @@ const useStore = () => {
         };
       })
   );
-  const [isGameStarted, setIsGameStarted] = useState(true); // TODO
   const [isCarCrash, setIsCarCrash] = useState(false);
   const [offenderBeforeMove, setOffenderBeforeMove] = useState(null);
-  const [initialTimer, setInitialTimer] = useState({ v: 30 });
-  const [timer, setTimer] = useState({ v: 30 });
+  const [initialTimer, setInitialTimer] = useState({ v: '' });
+  const [timer, setTimer] = useState({ v: '' });
   const [isTimerStopped, setIsTimerStopped] = useState(true);
-  // TODO: refactor in ListOfCarActions.js
-  const goToNextCar = () => {
-    const selectedCar = cars.find(item => item.isTurn);
-    let copy = [...cars];
-    copy[selectedCar.index] = { ...selectedCar, isTurn: false };
-
-    let nextCar = copy.slice(selectedCar.index + 1).find(c => c.penalty === 0);
-
-    if (nextCar) {
-      copy[nextCar.index] = { ...nextCar, isTurn: true };
-    } else {
-      copy = copy.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
-      nextCar = copy.find(c => c.penalty === 0);
-
-      if (!nextCar) {
-        // setIsGameOver(true);
-      } else {
-        copy[nextCar.index] = { ...nextCar, isTurn: true };
-      }
-    }
-
-    setCars(copy);
-  };
 
   return {
     cars,
@@ -67,7 +44,6 @@ const useStore = () => {
     setTimer,
     isTimerStopped,
     setIsTimerStopped,
-    goToNextCar,
   };
 };
 

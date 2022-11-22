@@ -3,14 +3,21 @@ import { useEffect } from 'react';
 import styles from '../../../styles/pages/GameRoom/Timer.module.css';
 
 function Timer ({
-  initialTimer,
-  setInitialTimer,
+  userId,
+  socket,
+  isGameStarted,
+  isCarCrash,
+  // initialTimer,
+  // setInitialTimer,
   timer,
   setTimer,
   isTimerStopped,
   setIsTimerStopped,
-  goToNextCar,
+  cars,
 }) {
+  const myCar = cars.find(c => c.userId === userId);
+  const isCarOwnerLeader = myCar?.isLeader;
+
   const handleTimerButton = () => {
     if (timer.v === '') {
       return;
@@ -32,35 +39,37 @@ function Timer ({
       clearInterval(timerId);
     }
     */
-    setIsTimerStopped(!isTimerStopped);
+    // setIsTimerStopped(!isTimerStopped); // TODO: v0
+    socket.emit('game:start', timer.v)
   };
 
   const handleTimerInput = (e) => {
     const { value } = e.target;
 
     if (value.length === 0) {
-      setInitialTimer({ v: '' });
+      // setInitialTimer({ v: '' }); // TODO: v0
       setTimer({ v: '' });
-      setIsTimerStopped(true);
+      // setIsTimerStopped(true); // TODO: v0
       return;
     }
     if (/^[0-9]{1,2}$/.test(value)) {
       const parsedInt = Number.parseInt(value);
-      setInitialTimer({ v: parsedInt });
+      // setInitialTimer({ v: parsedInt }); // TODO: v0
       setTimer({ v: parsedInt });
-      setIsTimerStopped(true);
+      // setIsTimerStopped(true); // TODO: v0
     }
   };
 
   useEffect(() => {
     let timerId;
 
-    if (!isTimerStopped) {
+    // if (!isTimerStopped) { // TODO: v0
+    if (isGameStarted && !isCarCrash) {
         timerId = setTimeout(() => {
-        //timerId = setInterval(() => {
-          if (timer.v === 0) {
-            goToNextCar();
-            setTimer({ v: initialTimer.v });
+          if (timer.v === 0 && myCar.isTurn) {
+            // goToNextCar(); // TODO: v0
+            // setTimer({ v: initialTimer.v }); // TODO: v0
+            socket.emit('car:skip-move');
           } else {
             setTimer(prevTimer => ({ v: prevTimer.v - 1 }));
           }
@@ -70,9 +79,9 @@ function Timer ({
 
     return () => {
       clearTimeout(timerId);
-    //  clearInterval(timerId);
     };
-  }, [isTimerStopped, timer]);
+  // }, [isTimerStopped, timer]); TODO: v0
+  }, [isGameStarted, isCarCrash, timer]);
 
   return (
     <div className={styles.container}>
@@ -80,15 +89,17 @@ function Timer ({
         className={styles.timerInput}
         type="text"
         value={timer.v}
-        disabled={false}
+        disabled={isGameStarted || !isCarOwnerLeader}
         onChange={handleTimerInput}
       />
-      <button
-        className={styles.timerButton}
-        onClick={handleTimerButton}
-      >
-        {isTimerStopped ? <span>&#9654;</span>: <span>&#9726;</span>}
-      </button>
+      {!isGameStarted && isCarOwnerLeader && (
+        <button
+          className={styles.timerButton}
+          onClick={handleTimerButton}
+        >
+          {isTimerStopped ? <span>&#9654;</span>: <span>&#9726;</span>}
+        </button>
+      )}
     </div>
   );
 }

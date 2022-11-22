@@ -5,7 +5,7 @@ import styles from '../../../styles/pages/GameRoom/ListOfParticipants.module.css
 
 function ListOfParticipants({ socket, userId }) {
   const context = useContext(AppContext);
-  const { cars, setCars } = context;
+  const { cars, setCars, isGameStarted } = context;
 
   return (
     <div className={styles.container}>
@@ -17,7 +17,7 @@ function ListOfParticipants({ socket, userId }) {
         {cars.map((car, idx) => {
           const styleOfTurn = car.penalty ? styles.playerPenalty
             : car.isTurn ? styles.playerTurn : '';
-          const isDisabled = userId !== car.userId;
+          const isDisabled = isGameStarted || userId !== car.userId;
 
           return (
             <Fragment key={idx}>

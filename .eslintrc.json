@@ -18,5 +18,8 @@
         "react"
     ],
     "rules": {
+      "operator-assignment": "off",
+      "default-case": "warn",
+      "arrow-parens": ["error", "as-needed"]
     }
 }
