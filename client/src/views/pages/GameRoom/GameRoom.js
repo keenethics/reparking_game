@@ -82,6 +82,10 @@ function GameRoom () {
       context.setOffenderBeforeMove(offenderBeforeMove);
     });
 
+    socket.on('car:skip-move', (dataOfCars) => {
+      context.setCars(dataOfCars);
+    });
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -91,6 +95,7 @@ function GameRoom () {
       socket.off('car:change-name');
       socket.off('car:make-move');
       socket.off('car:crash');
+      socket.off('car:skip-move');
     };
   }, []);
 

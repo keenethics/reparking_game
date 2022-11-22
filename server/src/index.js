@@ -112,6 +112,8 @@ const makeMove = (shiftedCar, roomId) => {
     rooms[roomId].assignedCars = copyOfCars;
     // setTimer({ v: initialTimer.v }); // TODO
   }
+
+  // TODO: setBoardCells boxshadow: none
 };
 
 
@@ -273,6 +275,36 @@ io.on('connection', (socket) => {
       room.isCarCrash,
       room.offenderBeforeMove,
     );
+  });
+
+  socket.on('car:skip-move', () => {
+    const { roomId, userId } = socket.handshake.auth;
+
+    let copyOfCars = JSON.parse(JSON.stringify(rooms[roomId].assignedCars));
+    const selectedCar = copyOfCars.find(c => c.userId === userId);
+    copyOfCars[selectedCar.index] = { ...selectedCar, isTurn: false };
+
+    const nextCarInRound = copyOfCars.slice(selectedCar.index + 1).find(c => c.penalty === 0);
+
+    if (nextCarInRound) {
+      copyOfCars[nextCarInRound.index] = { ...nextCarInRound, isTurn: true };
+    } else {
+      copyOfCars = copyOfCars.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
+      const nextCarInNextRound = copyOfCars.find(c => c.penalty === 0);
+
+      if (!nextCarInNextRound) {
+        // setIsGameOver(true);
+      } else {
+        copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, isTurn: true };
+      }
+    }
+    rooms[roomId].assignedCars = copyOfCars;
+
+    //flushSync(() => setIsStopped(true)); // TODO: fallback
+    // setTimer({ v: initialTimer.v });
+    //setIsStopped(false); // TODO: fallback
+
+    io.to(roomId).emit('car:skip-move', rooms[roomId].assignedCars);
   });
 
   socket.on('disconnect', () => {

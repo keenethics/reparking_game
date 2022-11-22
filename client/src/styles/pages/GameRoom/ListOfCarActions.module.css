@@ -209,7 +209,6 @@
   border: 3px solid black;
   width: 54px;
   height: 54px;
-  background-color: #f0ad4e;
   outline: none;
   background-color: white;
   color: black;
@@ -219,4 +218,11 @@
   color: white;
   background-color: black;
   cursor: pointer;
+}
+
+.skipBtn:disabled {
+  color: gray;
+  background-color: lightgray;
+  cursor: auto;
+  border: 1px solid gray;
 }
