@@ -8,10 +8,12 @@
 
 .blue {
   background-image: url("../../../assets/car_blue.svg");
+  border-radius: 10px;
 }
 
 .red {
   background-image: url("../../../assets/car_red.svg");
+  border-radius: 10px;
 }
 
 .number {
@@ -22,5 +24,5 @@
 }
 
 .highlight {
-  box-shadow: 0px 0px 4px 2px green, 0px 0px 20px 2px green inset;
+  box-shadow: 0px 0px 10px 5px green inset;
 }

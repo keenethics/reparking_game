@@ -7,7 +7,7 @@ function Timer ({
   socket,
   isGameStarted,
   isCarCrash,
-  // initialTimer,
+  initialTimer,
   // setInitialTimer,
   timer,
   setTimer,
@@ -85,21 +85,28 @@ function Timer ({
 
   return (
     <div className={styles.container}>
-      <input
-        className={styles.timerInput}
-        type="text"
-        value={timer.v}
-        disabled={isGameStarted || !isCarOwnerLeader}
-        onChange={handleTimerInput}
-      />
-      {!isGameStarted && isCarOwnerLeader && (
-        <button
-          className={styles.timerButton}
-          onClick={handleTimerButton}
-        >
-          {isTimerStopped ? <span>&#9654;</span>: <span>&#9726;</span>}
-        </button>
-      )}
+      <div className={styles.progressBar}>
+        <div
+          className={styles.progressValue}
+          style={{ width: `${timer.v / initialTimer.v * 100}%` }}
+        ></div>
+
+        <input
+          className={styles.timerInput}
+          type="text"
+          value={timer.v}
+          disabled={isGameStarted || !isCarOwnerLeader}
+          onChange={handleTimerInput}
+        />
+        {!isGameStarted && isCarOwnerLeader && (
+          <button
+            className={styles.timerButton}
+            onClick={handleTimerButton}
+          >
+            {isTimerStopped ? <span>&#9654;</span>: <span>&#9726;</span>}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

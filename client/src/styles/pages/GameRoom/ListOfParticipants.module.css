@@ -1,58 +1,96 @@
 .container {
-  padding-top: 110px;
+  padding-top: 116px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: auto auto auto auto;
+.list {
+  font-size: 16px;
+  color: black;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
 }
 
-.item1, .item2, .item3, .item4 {
-  text-align: center;
+.tHead {
+  font-weight: bold;
+}
+
+.row {
+  display: flex;
+  height: 30px;
+}
+
+.col1 {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(49, 176, 213, 0.3);
+}
+
+.col2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 5px solid white;
+  width: 30px;
+  background-color: rgba(49, 176, 213, 0.3);
+}
+
+.col3 {
+  display: flex;
 }
 
 .item1 {
-  border-right: 2px solid #ddd;
-  padding: 6px;
-}
-
-.item3 {
-  border: none;
-  padding: 3px 0;
-}
-
-.item1, .item2, .item3, .item4 {
-  border-bottom: 2px solid #ddd;
+  width: 40px;
 }
 
 .item2 {
-  border-right: 2px solid #ddd;
-  padding: 3px 5px;
+  width: 170px;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  color: black;
+  text-align: center;
 }
 
-.item4 {
-  border-left: 2px solid #ddd;
-  padding: 3px 5px;
+.item3 {
+  width: 70px;
 }
 
-.playerTurn {
-  background-color: #dff0d8;
+.item1, .item2, .item3 {
+  height: 30px;
+  background-color: rgba(49, 176, 213, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.playerPenalty {
-  background-color: #f2dede;
+.owner::after {
+  content: "\27A4";
+  font-size: 24px;
+}
+
+.turn {
+  box-shadow: 0px 0px 8px 1px black inset;
+}
+
+.penalty {
+  background-color: rgb(255 117 117);
 }
 
 .online {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background-color: lightgreen;
+  background-color: #00e400;
+  border: 2px solid rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
 }
 
 .offline {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background-color: lightgray;
+  background-color: #cfcdcd;
+  border: 2px solid rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
 }

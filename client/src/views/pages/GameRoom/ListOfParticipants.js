@@ -9,43 +9,55 @@ function ListOfParticipants({ socket, userId }) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.grid}>
-        <div className={styles.item1} />
-        <div className={styles.item2}>Car</div>
-        <div className={styles.item3}>Name</div>
-        <div className={styles.item4}>Penalty</div>
+      <div className={styles.list}>
+        <div className={styles.row}>
+          <div className={styles.col1} />
+          <div
+            className={styles.col2}
+          />
+          <div className={[styles.col3, styles.tHead].join(' ')}>
+            <div className={styles.item1}>Car</div>
+            <div className={styles.item2}>Name</div>
+            <div className={styles.item3}>Penalty</div>
+          </div>
+        </div>
         {cars.map((car, idx) => {
-          const styleOfTurn = car.penalty ? styles.playerPenalty
-            : car.isTurn ? styles.playerTurn : '';
           const isDisabled = isGameStarted || userId !== car.userId;
 
           return (
-            <Fragment key={idx}>
-              <div className={styles.item1}>
+            <div className={styles.row} key={idx}>
+              <div className={styles.col1}>
+                {userId === car.userId ? <span className={styles.owner} /> : ''}
+              </div>
+
+              <div className={styles.col2}>
                 {car.isOnline ?
                   <div className={styles.online} /> : <div className={styles.offline} />
                 }
               </div>
-              <div className={[styles.item2, styleOfTurn].join(' ')}>
-                {car.number}
+
+              <div className={[styles.col3, car.isTurn && styles.turn].join(' ')}>
+                <div className={[styles.item1, car.penalty && styles.penalty].join(' ')}>
+                  {car.number}
+                </div>
+                <input
+                  type="text"
+                  className={[styles.item2, car.penalty && styles.penalty].join(' ')}
+                  value={car.name}
+                  onChange={(event => {
+                    const copy = [...cars];
+                    const { value } = event.target;
+                    copy[car.index] = { ...copy[car.index], name: value };
+                    setCars(copy);
+                    socket.emit('car:change-name', value);
+                  })}
+                  disabled={isDisabled}
+                />
+                <div className={[styles.item3, car.penalty && styles.penalty].join(' ')}>
+                  {car.penalty ? car.penalty : ''}
+                </div>
               </div>
-              <input
-                type="text"
-                className={[styles.item3, styleOfTurn].join(' ')}
-                value={car.name}
-                onChange={(event => {
-                  const copy = [...cars];
-                  const { value } = event.target;
-                  copy[car.index] = { ...copy[car.index], name: value };
-                  setCars(copy);
-                  socket.emit('car:change-name', value);
-                })}
-                disabled={isDisabled}
-              />
-              <div className={[styles.item4, styleOfTurn].join(' ')}>
-                {car.penalty ? car.penalty : ''}
-              </div>
-            </Fragment>
+            </div>
           );
         })}
       </div>

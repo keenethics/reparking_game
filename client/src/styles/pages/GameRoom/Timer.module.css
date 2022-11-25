@@ -1,42 +1,58 @@
+:root{
+  --progressBarWidth: 600px;
+  --timerInputWidth: 60px;
+}
+
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 10px;
   margin-bottom: 30px;
 }
 
-.timerButton {
-  width: 46px;
-  height: 46px;
-  border: 3px solid black;
-  border-radius: 10px;
-  outline: none;
-  background-color: white;
+.progressBar {
+  position: relative;
+  width: var(--progressBarWidth);
+  box-shadow: 0px 5px 10px 0px rgb(0, 0, 0, 0.3);
+  height: 30px;
+}
+
+.progressValue {
+  height: 30px;
+  background: #f0ad4e;
+}
+
+.timerInput {
+  position: absolute;
+  top: 0;
+  left: calc((var(--progressBarWidth) / 2) - (var(--timerInputWidth) / 2));
+  width: var(--timerInputWidth);
+  font-size: 26px;
+  font-weight: bold;
   color: black;
-  font-size: 27px;
-  margin-left: 10px;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.timerButton {
+  position: absolute;
+  top: 0;
+  right: 0px;
+  width: 60px;
+  height: 30px;
+  border: 2px solid black;
+  outline: none;
+  background-color: transparent;
+  color: black;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .timerButton:hover {
   cursor: pointer;
-}
-
-.timerInput {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 86px;
-  height: 86px;
-  font-size: 40px;
-  font-weight: bold;
-  color: black;
-  background-color: white;
-  text-align: center;
-  border-radius: 50%;
-  border-top: 10px solid blue;
-  border-right: 10px solid red;
-  border-bottom: 10px solid red;
-  border-left: 10px solid blue;
-  outline: none;
-  box-sizing: border-box;
 }
