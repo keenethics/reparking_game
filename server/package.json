@@ -1,0 +1,18 @@
+{
+  "name": "server",
+  "scripts": {
+    "babel-node": "babel-node --only src --only ../shared src/index.js",
+    "start:dev-server": "nodemon --delay 2500ms --watch src --watch ../shared --exec npm run babel-node",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.20.2",
+    "@babel/node": "^7.20.2",
+    "@babel/preset-env": "^7.20.2",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "socket.io": "^4.5.3",
+    "uuid": "^9.0.0"
+  }
+}

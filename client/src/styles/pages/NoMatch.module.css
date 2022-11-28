@@ -1,0 +1,12 @@
+.container {
+  border-radius: 10px;
+  background-color: white;
+  color: black;
+  font-size: 40px;
+  font-weight: bold;
+  border-top: 20px solid blue;
+  border-right: 20px solid red;
+  border-bottom: 20px solid red;
+  border-left: 20px solid blue;
+  padding: 100px 50px;
+}

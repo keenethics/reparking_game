@@ -1,0 +1,96 @@
+.container {
+  padding-top: 116px;
+}
+
+.list {
+  font-size: 16px;
+  color: black;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.3);
+}
+
+.tHead {
+  font-weight: bold;
+}
+
+.row {
+  display: flex;
+  height: 30px;
+}
+
+.col1 {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(49, 176, 213, 0.3);
+}
+
+.col2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 5px solid white;
+  width: 30px;
+  background-color: rgba(49, 176, 213, 0.3);
+}
+
+.col3 {
+  display: flex;
+}
+
+.item1 {
+  width: 40px;
+}
+
+.item2 {
+  width: 170px;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  color: black;
+  text-align: center;
+}
+
+.item3 {
+  width: 70px;
+}
+
+.item1, .item2, .item3 {
+  height: 30px;
+  background-color: rgba(49, 176, 213, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.owner::after {
+  content: "\27A4";
+  font-size: 24px;
+}
+
+.turn {
+  box-shadow: 0px 0px 8px 1px black inset;
+}
+
+.penalty {
+  background-color: rgb(255 117 117);
+}
+
+.online {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #00e400;
+  border: 2px solid rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
+}
+
+.offline {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #cfcdcd;
+  border: 2px solid rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
+}
