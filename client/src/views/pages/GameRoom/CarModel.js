@@ -30,7 +30,7 @@ function CarModel({ car }) {
 
   return (
     <div
-      className={[styles.container, styles[car.teamColor], car.isTurn && styles.highlight].join(' ')}
+      className={[styles.container, styles[car.teamColor], car.hasTurn && styles.highlight].join(' ')}
       style={{
         width: `${Car.width}px`,
         height: `${Car.height}px`,

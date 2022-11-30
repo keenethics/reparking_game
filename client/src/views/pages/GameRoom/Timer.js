@@ -16,7 +16,6 @@ function Timer ({
   cars,
 }) {
   const myCar = cars.find(c => c.userId === userId);
-  const isCarOwnerLeader = myCar?.isLeader;
 
   const handleTimerButton = () => {
     if (timer.v === '') {
@@ -66,7 +65,7 @@ function Timer ({
     // if (!isTimerStopped) { // TODO: v0
     if (isGameStarted && !isCarCrash) {
         timerId = setTimeout(() => {
-          if (timer.v === 0 && myCar.isTurn) {
+          if (timer.v === 0 && myCar?.hasTurn) {
             // goToNextCar(); // TODO: v0
             // setTimer({ v: initialTimer.v }); // TODO: v0
             socket.emit('car:skip-move');
@@ -95,10 +94,10 @@ function Timer ({
           className={styles.timerInput}
           type="text"
           value={timer.v}
-          disabled={isGameStarted || !isCarOwnerLeader}
+          disabled={isGameStarted || !myCar?.isLeader}
           onChange={handleTimerInput}
         />
-        {!isGameStarted && isCarOwnerLeader && (
+        {!isGameStarted && myCar?.isLeader && (
           <button
             className={styles.timerButton}
             onClick={handleTimerButton}

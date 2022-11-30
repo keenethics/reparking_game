@@ -22,7 +22,7 @@ const PORT = 8080; // TODO: env
 const makeMove = (shiftedCar, roomId) => {
   const assignedCars = rooms[roomId].assignedCars;
   let copyOfCars = JSON.parse(JSON.stringify(assignedCars));
-  shiftedCar.isTurn = false;
+  shiftedCar.hasTurn = false;
   copyOfCars[shiftedCar.index] = { ...shiftedCar };
 
   // calculate cars positions on cells
@@ -88,7 +88,7 @@ const makeMove = (shiftedCar, roomId) => {
   const nextCarInRound = copyOfCars.slice(shiftedCar.index + 1).find(c => c.penalty === 0);
 
   if (nextCarInRound) {
-    copyOfCars[nextCarInRound.index] = { ...nextCarInRound, isTurn: true };
+    copyOfCars[nextCarInRound.index] = { ...nextCarInRound, hasTurn: true };
   } else {
     copyOfCars = copyOfCars.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
     const nextCarInNextRound = copyOfCars.find(c => c.penalty === 0);
@@ -96,7 +96,7 @@ const makeMove = (shiftedCar, roomId) => {
     if (!nextCarInNextRound) {
       // setIsGameOver(true);
     } else {
-      copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, isTurn: true };
+      copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, hasTurn: true };
     }
   }
   /* ******************* */
@@ -111,8 +111,6 @@ const makeMove = (shiftedCar, roomId) => {
     rooms[roomId].assignedCars = copyOfCars;
     // setTimer({ v: initialTimer.v }); // TODO
   }
-
-  // TODO: setBoardCells boxshadow: none
 };
 
 io.use((socket, next) => {
@@ -189,11 +187,18 @@ io.on('connection', (socket) => {
 
   socket.on('game:start', (timer) => {
     const { roomId, userId } = socket.handshake.auth;
+    const room = rooms[roomId];
 
-    rooms[roomId].timer = timer;
-    rooms[roomId].isGameStarted = true;
+    room.assignedCars[0].hasTurn = true;
+    room.timer = timer;
+    room.isGameStarted = true;
 
-    io.to(roomId).emit('game:start', rooms[roomId].isGameStarted, rooms[roomId].timer);
+    io.to(roomId).emit(
+      'game:start',
+      room.assignedCars,
+      room.isGameStarted,
+      room.timer,
+    );
   });
 
   socket.on('car:change-name', (name) => {
@@ -220,11 +225,6 @@ io.on('connection', (socket) => {
           makeMove(shiftedCar, roomId);
           break;
         }
-        case Car.MoveType.goOneStepBack: {
-          const shiftedCar = Car.calcOneStepBack(copyOfCar);
-          makeMove(shiftedCar, roomId);
-          break;
-        }
         case Car.MoveType.goToLeftLane: {
           const shiftedCar = Car.calcStepToLeftLane(copyOfCar);
           makeMove(shiftedCar, roomId);
@@ -242,6 +242,11 @@ io.on('connection', (socket) => {
         }
         case Car.MoveType.turnForwardRight: {
           const shiftedCar = Car.calcTurnForwardRight(copyOfCar);
+          makeMove(shiftedCar, roomId);
+          break;
+        }
+        case Car.MoveType.goOneStepBack: {
+          const shiftedCar = Car.calcOneStepBack(copyOfCar);
           makeMove(shiftedCar, roomId);
           break;
         }
@@ -297,12 +302,12 @@ io.on('connection', (socket) => {
 
     let copyOfCars = JSON.parse(JSON.stringify(rooms[roomId].assignedCars));
     const selectedCar = copyOfCars.find(c => c.userId === userId);
-    copyOfCars[selectedCar.index] = { ...selectedCar, isTurn: false };
+    copyOfCars[selectedCar.index] = { ...selectedCar, hasTurn: false };
 
     const nextCarInRound = copyOfCars.slice(selectedCar.index + 1).find(c => c.penalty === 0);
 
     if (nextCarInRound) {
-      copyOfCars[nextCarInRound.index] = { ...nextCarInRound, isTurn: true };
+      copyOfCars[nextCarInRound.index] = { ...nextCarInRound, hasTurn: true };
     } else {
       copyOfCars = copyOfCars.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
       const nextCarInNextRound = copyOfCars.find(c => c.penalty === 0);
@@ -310,7 +315,7 @@ io.on('connection', (socket) => {
       if (!nextCarInNextRound) {
         // setIsGameOver(true);
       } else {
-        copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, isTurn: true };
+        copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, hasTurn: true };
       }
     }
     rooms[roomId].assignedCars = copyOfCars;

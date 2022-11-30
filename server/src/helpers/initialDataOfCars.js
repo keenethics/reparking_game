@@ -46,7 +46,8 @@ let initialDataOfCars = new Array(numberOfTeams * numberOfPlayersInTeam)
       teamColor,
       direction,
       penalty: 0,
-      isTurn: idx > 0 ? false : true,
+      // isTurn: idx > 0 ? false : true,
+      hasTurn: false,
       isOnline: false,
     };
   });

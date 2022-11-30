@@ -5,7 +5,6 @@ import io from 'socket.io-client';
 import AppContext from '../../../context/AppContext';
 import ListOfParticipants from './ListOfParticipants';
 import Board from './Board.js';
-import ListOfCarActions from './ListOfCarActions';
 import styles from '../../../styles/pages/GameRoom/GameRoom.module.css';
 
 let userId;
@@ -65,7 +64,8 @@ function GameRoom () {
       context.setInitialTimer({ v: timer });
     });
 
-    socket.on('game:start', (isGameStarted, timer) => {
+    socket.on('game:start', (dataOfCars, isGameStarted, timer) => {
+      context.setCars(dataOfCars);
       context.setIsGameStarted(isGameStarted);
       context.setTimer({ v: timer });
       context.setInitialTimer({ v: timer });
@@ -124,7 +124,6 @@ function GameRoom () {
     <div className={styles.container}>
       <ListOfParticipants socket={socket} userId={userId} />
       <Board socket={socket} userId={userId} />
-      <ListOfCarActions socket={socket} userId={userId} />
     </div>
   );
 }

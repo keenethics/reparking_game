@@ -12,9 +12,7 @@ function ListOfParticipants({ socket, userId }) {
       <div className={styles.list}>
         <div className={styles.row}>
           <div className={styles.col1} />
-          <div
-            className={styles.col2}
-          />
+          <div className={styles.col2} />
           <div className={[styles.col3, styles.tHead].join(' ')}>
             <div className={styles.item1}>Car</div>
             <div className={styles.item2}>Name</div>
@@ -36,7 +34,7 @@ function ListOfParticipants({ socket, userId }) {
                 }
               </div>
 
-              <div className={[styles.col3, car.isTurn && styles.turn].join(' ')}>
+              <div className={[styles.col3, car.hasTurn && styles.turn].join(' ')}>
                 <div className={[styles.item1, car.penalty && styles.penalty].join(' ')}>
                   {car.number}
                 </div>
