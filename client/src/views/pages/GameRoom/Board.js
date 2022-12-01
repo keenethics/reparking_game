@@ -11,18 +11,17 @@ import styles from '../../../styles/pages/GameRoom/Board.module.css';
 function Board({ socket, userId }) {
   const context = useContext(AppContext);
   const {
+    boardCells,
+    setBoardCells,
     isGameStarted,
     isCarCrash,
     offenderBeforeMove,
     cars,
-    boardCells,
-    setBoardCells,
-    initialTimer,
-    setInitialTimer,
+    initialTimerInSec,
+    setInitialTimerInSec,
     timer,
     setTimer,
-    isTimerStopped,
-    setIsTimerStopped,
+    endTimeOfTurn,
   } = context;
   // const carWithTurn = cars.find(c => c.hasTurn);
   const myCar = cars.find(c => c.userId === userId);
@@ -215,24 +214,22 @@ function Board({ socket, userId }) {
   };
 
   const handleCarCrash = () => {
-    socket.emit('car:crash');
+    socket.emit('car:handle-crash');
   };
 
   return (
     <>
       <div className={styles.container}>
         <Timer
-          userId={userId}
           socket={socket}
+          myCar={myCar}
           isGameStarted={isGameStarted}
-          isCarCrash={isCarCrash}
-          initialTimer={initialTimer}
-          setInitialTimer={setInitialTimer}
+          initialTimerInSec={initialTimerInSec}
+          setInitialTimerInSec={setInitialTimerInSec}
           timer={timer}
           setTimer={setTimer}
-          isTimerStopped={isTimerStopped}
-          setIsTimerStopped={setIsTimerStopped}
-          cars={cars}
+          endTimeOfTurn={endTimeOfTurn}
+          isCarCrash={isCarCrash}
         />
 
         <div className={styles.rim}>

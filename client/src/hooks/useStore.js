@@ -2,8 +2,6 @@ import { useState } from 'react';
 import Game from '@reparking_game/shared/Game';
 
 const useStore = () => {
-  const [isGameStarted, setIsGameStarted] = useState(false);
-  const [cars, setCars] = useState([]);
   const [boardCells, setBoardCells] = useState(
     new Array(64)
       .fill()
@@ -21,29 +19,31 @@ const useStore = () => {
         };
       })
   );
+  const [cars, setCars] = useState([]);
+  const [isGameStarted, setIsGameStarted] = useState(false);
   const [isCarCrash, setIsCarCrash] = useState(false);
   const [offenderBeforeMove, setOffenderBeforeMove] = useState(null);
-  const [initialTimer, setInitialTimer] = useState({ v: '' });
-  const [timer, setTimer] = useState({ v: '' });
-  const [isTimerStopped, setIsTimerStopped] = useState(true);
+  const [initialTimerInSec, setInitialTimerInSec] = useState('');
+  const [timer, setTimer] = useState('');
+  const [endTimeOfTurn, setEndTimeOfTurn] = useState('');
 
   return {
-    cars,
-    setCars,
     boardCells,
     setBoardCells,
+    cars,
+    setCars,
     isGameStarted,
     setIsGameStarted,
     isCarCrash,
     setIsCarCrash,
     offenderBeforeMove,
     setOffenderBeforeMove,
-    initialTimer,
-    setInitialTimer,
+    initialTimerInSec,
+    setInitialTimerInSec,
     timer,
     setTimer,
-    isTimerStopped,
-    setIsTimerStopped,
+    endTimeOfTurn,
+    setEndTimeOfTurn,
   };
 };
 

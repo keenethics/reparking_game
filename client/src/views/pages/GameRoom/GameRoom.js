@@ -57,48 +57,47 @@ function GameRoom () {
     });
     */
 
-    socket.on('game:join', (dataOfCars, isGameStarted, timer) => {
-      context.setCars(dataOfCars);
+    socket.on('game:join', (cars, isGameStarted, isCarCrash, offenderBeforeMove, initialTimerInSec, endTimeOfTurn) => {
+      context.setCars(cars);
       context.setIsGameStarted(isGameStarted);
-      context.setTimer({ v: timer });
-      context.setInitialTimer({ v: timer });
-    });
-
-    socket.on('game:start', (dataOfCars, isGameStarted, timer) => {
-      context.setCars(dataOfCars);
-      context.setIsGameStarted(isGameStarted);
-      context.setTimer({ v: timer });
-      context.setInitialTimer({ v: timer });
-    });
-
-    socket.on('game:disconnect', (dataOfCars) => {
-      context.setCars(dataOfCars);
-    });
-
-    socket.on('car:change-name', (dataOfCars) => {
-      context.setCars(dataOfCars);
-    });
-
-    socket.on('car:make-move', (dataOfCars, isCarCrash, offenderBeforeMove, timer) => {
-      context.setCars(dataOfCars);
       context.setIsCarCrash(isCarCrash);
       context.setOffenderBeforeMove(offenderBeforeMove);
-      context.setTimer({ v: timer });
-      context.setInitialTimer({ v: timer });
+      context.setInitialTimerInSec(initialTimerInSec);
+      context.setEndTimeOfTurn(endTimeOfTurn);
     });
 
-    socket.on('car:crash', (dataOfCars, isCarCrash, offenderBeforeMove, timer) => {
-      context.setCars(dataOfCars);
+    socket.on('game:start', (cars, isGameStarted, initialTimerInSec, endTimeOfTurn) => {
+      context.setCars(cars);
+      context.setIsGameStarted(isGameStarted);
+      context.setInitialTimerInSec(initialTimerInSec);
+      context.setEndTimeOfTurn(endTimeOfTurn);
+    });
+
+    socket.on('game:disconnect', (cars) => {
+      context.setCars(cars);
+    });
+
+    socket.on('car:change-name', (cars) => {
+      context.setCars(cars);
+    });
+
+    socket.on('car:make-move', (cars, isCarCrash, offenderBeforeMove, endTimeOfTurn) => {
+      context.setCars(cars);
       context.setIsCarCrash(isCarCrash);
       context.setOffenderBeforeMove(offenderBeforeMove);
-      context.setTimer({ v: timer });
-      context.setInitialTimer({ v: timer });
+      context.setEndTimeOfTurn(endTimeOfTurn);
     });
 
-    socket.on('car:skip-move', (dataOfCars, timer) => {
-      context.setCars(dataOfCars);
-      context.setTimer({ v: timer });
-      context.setInitialTimer({ v: timer });
+    socket.on('car:handle-crash', (cars, isCarCrash, offenderBeforeMove, endTimeOfTurn) => {
+      context.setCars(cars);
+      context.setIsCarCrash(isCarCrash);
+      context.setOffenderBeforeMove(offenderBeforeMove);
+      context.setEndTimeOfTurn(endTimeOfTurn);
+    });
+
+    socket.on('car:skip-move', (cars, endTimeOfTurn) => {
+      context.setCars(cars);
+      context.setEndTimeOfTurn(endTimeOfTurn);
     });
 
     return () => {
@@ -110,7 +109,7 @@ function GameRoom () {
       socket.off('game:disconnect');
       socket.off('car:change-name');
       socket.off('car:make-move');
-      socket.off('car:crash');
+      socket.off('car:handle-crash');
       socket.off('car:skip-move');
     };
   }, []);

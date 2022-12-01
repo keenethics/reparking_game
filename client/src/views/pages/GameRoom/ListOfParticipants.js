@@ -43,8 +43,8 @@ function ListOfParticipants({ socket, userId }) {
                   className={[styles.item2, car.penalty && styles.penalty].join(' ')}
                   value={car.name}
                   onChange={(event => {
-                    const copy = [...cars];
                     const { value } = event.target;
+                    const copy = JSON.parse(JSON.stringify(cars));
                     copy[car.index] = { ...copy[car.index], name: value };
                     setCars(copy);
                     socket.emit('car:change-name', value);

@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
+import scheduler from 'node-schedule';
 
 import rooms from './store/rooms';
 import initialDataOfCars from './helpers/initialDataOfCars';
@@ -17,15 +18,21 @@ const io = new Server(httpServer, {
 });
 
 const PORT = 8080; // TODO: env
+const NETWORK_DELAY = 1000;
+
+function calcEndTimeOfTurn (initialTimerInSec) {
+  return new Date(Date.now() + NETWORK_DELAY + initialTimerInSec * 1000);
+}
 
 // TODO: refactor
 const makeMove = (shiftedCar, roomId) => {
-  const assignedCars = rooms[roomId].assignedCars;
+  const room = rooms[roomId];
+  const assignedCars = room.assignedCars;
   let copyOfCars = JSON.parse(JSON.stringify(assignedCars));
   shiftedCar.hasTurn = false;
   copyOfCars[shiftedCar.index] = { ...shiftedCar };
 
-  // calculate cars positions on cells
+  /* **** calculate cars positions on cells **** */
   copyOfCars = copyOfCars.map(c => {
     let rowIndex;
     let colIndex;
@@ -102,14 +109,15 @@ const makeMove = (shiftedCar, roomId) => {
   /* ******************* */
 
   if (isCrash) {
-    rooms[roomId].isCarCrash = true;
-    const carBeforeMove = rooms[roomId].assignedCars[shiftedCar.index];
-    rooms[roomId].offenderBeforeMove = carBeforeMove;
-    rooms[roomId].assignedCars = copyOfCars;
-    // setIsTimerStopped(true); // TODO
+    room.isCarCrash = true;
+    const carBeforeMove = room.assignedCars[shiftedCar.index];
+    room.offenderBeforeMove = carBeforeMove;
+    room.assignedCars = copyOfCars;
+    room.turnTransfer.cancel();
   } else {
-    rooms[roomId].assignedCars = copyOfCars;
-    // setTimer({ v: initialTimer.v }); // TODO
+    room.assignedCars = copyOfCars;
+    room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
+    room.turnTransfer.reschedule(room.endTimeOfTurn);
   }
 };
 
@@ -122,7 +130,9 @@ io.use((socket, next) => {
     if (!room) {
       return next(new Error('Game does not exist'));
     }
+    // TODO: throw error if room doesn't exist
     // TODO: add contitions for joining the room
+    // TODO: if game started and user does not have a car then throw away
     /*
     if (room.assignedCars.length === 1) {
       return next(new Error('Game is full of players'));
@@ -146,7 +156,9 @@ io.on('connection', (socket) => {
       isGameStarted: false,
       isCarCrash: false,
       offenderBeforeMove: null,
-      timer: 30,
+      initialTimerInSec: 30,
+      endTimeOfTurn: null,
+      turnTransfer: null,
     };
     const gameUrl = `/game/${randomRoomId}`;
 
@@ -157,18 +169,19 @@ io.on('connection', (socket) => {
 
   socket.on('game:join', () => {
     console.log('game:join - handshake', socket.handshake);
+
     const { roomId, userId } = socket.handshake.auth;
-    // TODO: throw error if room doesn't exist
-    socket.join(roomId);
     const room = rooms[roomId];
+    socket.join(roomId);
     const assignedCar = room.assignedCars.find(item => item.userId === userId);
+
     if (!assignedCar) {
-      rooms[roomId].assignedCars.push(
+      room.assignedCars.push(
         {
           ...room.initialCars[room.assignedCars.length],
-          isOnline: true,
           userId,
-          isLeader: rooms[roomId].assignedCars.length === 0 ? true : false,
+          isLeader: room.assignedCars.length === 0 ? true : false,
+          isOnline: true,
         },
       );
     } else {
@@ -179,25 +192,60 @@ io.on('connection', (socket) => {
 
     io.to(roomId).emit(
       'game:join',
-      rooms[roomId].assignedCars,
-      rooms[roomId].isGameStarted,
-      rooms[roomId].timer,
+      room.assignedCars,
+      room.isGameStarted,
+      room.isCarCrash,
+      room.offenderBeforeMove,
+      room.initialTimerInSec,
+      room.endTimeOfTurn,
     );
   });
 
-  socket.on('game:start', (timer) => {
-    const { roomId, userId } = socket.handshake.auth;
+  socket.on('game:start', (initialTimerInSec) => {
+    const { roomId } = socket.handshake.auth;
     const room = rooms[roomId];
 
     room.assignedCars[0].hasTurn = true;
-    room.timer = timer;
     room.isGameStarted = true;
+    room.initialTimerInSec = initialTimerInSec;
+    room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
+    room.turnTransfer = scheduler.scheduleJob(room.endTimeOfTurn, function() {
+      let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
+      const carWithTurn = copyOfCars.find(c => c.hasTurn);
+      copyOfCars[carWithTurn.index] = { ...carWithTurn, hasTurn: false };
+
+      const nextCarInRound = copyOfCars.slice(carWithTurn.index + 1).find(c => c.penalty === 0);
+
+      if (nextCarInRound) {
+        copyOfCars[nextCarInRound.index] = { ...nextCarInRound, hasTurn: true };
+      } else {
+        copyOfCars = copyOfCars.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
+        const nextCarInNextRound = copyOfCars.find(c => c.penalty === 0);
+
+        if (!nextCarInNextRound) {
+          // setIsGameOver(true);
+        } else {
+          copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, hasTurn: true };
+        }
+      }
+      room.assignedCars = copyOfCars;
+      room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
+      room.turnTransfer.reschedule(room.endTimeOfTurn);
+
+      io.to(roomId).emit(
+        'car:skip-move',
+        room.assignedCars,
+        // TODO: think about car crash
+        room.endTimeOfTurn,
+      );
+    });
 
     io.to(roomId).emit(
       'game:start',
       room.assignedCars,
       room.isGameStarted,
-      room.timer,
+      room.initialTimerInSec,
+      room.endTimeOfTurn,
     );
   });
 
@@ -214,10 +262,11 @@ io.on('connection', (socket) => {
 
   socket.on('car:make-move', (moveType, numberOfSteps) => {
     const { roomId, userId } = socket.handshake.auth;
-    const selectedCar = rooms[roomId].assignedCars.find(c => c.userId === userId);
+    const room = rooms[roomId];
+    const carWithTurn = room.assignedCars.find(c => c.userId === userId);
 
-    if (selectedCar) {
-      const copyOfCar = JSON.parse(JSON.stringify(selectedCar));
+    if (carWithTurn) {
+      const copyOfCar = JSON.parse(JSON.stringify(carWithTurn));
 
       switch(moveType) {
         case Car.MoveType.goForward: {
@@ -265,14 +314,14 @@ io.on('connection', (socket) => {
 
     io.to(roomId).emit(
       'car:make-move',
-      rooms[roomId].assignedCars,
-      rooms[roomId].isCarCrash,
-      rooms[roomId].offenderBeforeMove,
-      rooms[roomId].timer,
+      room.assignedCars,
+      room.isCarCrash,
+      room.offenderBeforeMove,
+      room.endTimeOfTurn,
     );
   });
 
-  socket.on('car:crash', () => {
+  socket.on('car:handle-crash', () => {
     const { roomId, userId } = socket.handshake.auth;
     const room = rooms[roomId];
     let car = room.assignedCars[room.offenderBeforeMove.index];
@@ -285,26 +334,27 @@ io.on('connection', (socket) => {
     room.assignedCars[car.index] = car;
     room.isCarCrash = false;
     room.offenderBeforeMove = null;
-    // setIsTimerStopped(false);
-    // setTimer({ v: initialTimer });
+    room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
+    room.turnTransfer.reschedule(room.endTimeOfTurn);
 
     io.to(roomId).emit(
-      'car:crash',
+      'car:hadnle-crash',
       room.assignedCars,
       room.isCarCrash,
       room.offenderBeforeMove,
-      room.timer,
+      room.endTimeOfTurn,
     );
   });
 
   socket.on('car:skip-move', () => {
     const { roomId, userId } = socket.handshake.auth;
+    const room = rooms[roomId];
 
-    let copyOfCars = JSON.parse(JSON.stringify(rooms[roomId].assignedCars));
-    const selectedCar = copyOfCars.find(c => c.userId === userId);
-    copyOfCars[selectedCar.index] = { ...selectedCar, hasTurn: false };
+    let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
+    const carWithTurn = copyOfCars.find(c => c.userId === userId);
+    copyOfCars[carWithTurn.index] = { ...carWithTurn, hasTurn: false };
 
-    const nextCarInRound = copyOfCars.slice(selectedCar.index + 1).find(c => c.penalty === 0);
+    const nextCarInRound = copyOfCars.slice(carWithTurn.index + 1).find(c => c.penalty === 0);
 
     if (nextCarInRound) {
       copyOfCars[nextCarInRound.index] = { ...nextCarInRound, hasTurn: true };
@@ -318,13 +368,15 @@ io.on('connection', (socket) => {
         copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, hasTurn: true };
       }
     }
-    rooms[roomId].assignedCars = copyOfCars;
+    room.assignedCars = copyOfCars;
+    room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
+    room.turnTransfer.reschedule(room.endTimeOfTurn);
 
-    // flushSync(() => setIsStopped(true)); // TODO: fallback
-    // setTimer({ v: initialTimer.v }); // TODO: v0
-    // setIsStopped(false); // TODO: fallback
-
-    io.to(roomId).emit('car:skip-move', rooms[roomId].assignedCars, rooms[roomId].timer);
+    io.to(roomId).emit(
+      'car:skip-move',
+      room.assignedCars,
+      room.endTimeOfTurn,
+    );
   });
 
   socket.on('disconnect', () => {

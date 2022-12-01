@@ -3,106 +3,86 @@ import { useEffect } from 'react';
 import styles from '../../../styles/pages/GameRoom/Timer.module.css';
 
 function Timer ({
-  userId,
   socket,
+  myCar,
   isGameStarted,
-  isCarCrash,
-  initialTimer,
-  // setInitialTimer,
+  initialTimerInSec,
+  setInitialTimerInSec,
   timer,
   setTimer,
-  isTimerStopped,
-  setIsTimerStopped,
-  cars,
+  endTimeOfTurn,
+  isCarCrash,
 }) {
-  const myCar = cars.find(c => c.userId === userId);
-
-  const handleTimerButton = () => {
-    if (timer.v === '') {
+  const startGame = () => {
+    if (initialTimerInSec === '') {
       return;
     }
-    /*
-    if (isStopped) {
-      flushSync(() =>
-        setTimerId(
-          setInterval(() => {
-            if (timer === 0) {
-              setTimer(initialTimer);
-            } else {
-              setTimer(prevTimer => prevTimer - 1);
-            }
-          }, 1000)
-        )
-      )
-    } else {
-      clearInterval(timerId);
-    }
-    */
-    // setIsTimerStopped(!isTimerStopped); // TODO: v0
-    socket.emit('game:start', timer.v)
+    socket.emit('game:start', initialTimerInSec)
   };
 
   const handleTimerInput = (e) => {
     const { value } = e.target;
 
     if (value.length === 0) {
-      // setInitialTimer({ v: '' }); // TODO: v0
-      setTimer({ v: '' });
-      // setIsTimerStopped(true); // TODO: v0
+      setInitialTimerInSec('');
       return;
     }
     if (/^[0-9]{1,2}$/.test(value)) {
       const parsedInt = Number.parseInt(value);
-      // setInitialTimer({ v: parsedInt }); // TODO: v0
-      setTimer({ v: parsedInt });
-      // setIsTimerStopped(true); // TODO: v0
+      setInitialTimerInSec(parsedInt);
     }
   };
 
   useEffect(() => {
+    /*
+    if (isCarCrash) {
+      setTimer(0);
+      return;
+    }
+    */
+    if (endTimeOfTurn) {
+      const now = Date.now();
+      const end = new Date(endTimeOfTurn).getTime();
+
+      setTimer(Math.floor((end - now) / 1000));
+    }
+  }, [endTimeOfTurn]);
+
+  useEffect(() => {
     let timerId;
 
-    // if (!isTimerStopped) { // TODO: v0
-    if (isGameStarted && !isCarCrash) {
-        timerId = setTimeout(() => {
-          if (timer.v === 0 && myCar?.hasTurn) {
-            // goToNextCar(); // TODO: v0
-            // setTimer({ v: initialTimer.v }); // TODO: v0
-            socket.emit('car:skip-move');
-          } else {
-            setTimer(prevTimer => ({ v: prevTimer.v - 1 }));
-          }
-        }, 1000);
-
+    if (isGameStarted && timer !== 0 && !isCarCrash) {
+      timerId = setTimeout(() => {
+        setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
     }
 
     return () => {
       clearTimeout(timerId);
     };
-  // }, [isTimerStopped, timer]); TODO: v0
-  }, [isGameStarted, isCarCrash, timer]);
+  }, [isGameStarted, timer, isCarCrash]);
 
   return (
     <div className={styles.container}>
       <div className={styles.progressBar}>
         <div
           className={styles.progressValue}
-          style={{ width: `${timer.v / initialTimer.v * 100}%` }}
+          style={{ width: `${!isGameStarted ? 100 : timer / initialTimerInSec * 100}%` }}
         ></div>
 
         <input
           className={styles.timerInput}
           type="text"
-          value={timer.v}
+          value={!isGameStarted ? initialTimerInSec : timer}
           disabled={isGameStarted || !myCar?.isLeader}
           onChange={handleTimerInput}
         />
         {!isGameStarted && myCar?.isLeader && (
           <button
             className={styles.timerButton}
-            onClick={handleTimerButton}
+            onClick={startGame}
           >
-            {isTimerStopped ? <span>&#9654;</span>: <span>&#9726;</span>}
+            <span>&#9654;</span>
           </button>
         )}
       </div>
