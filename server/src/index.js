@@ -235,7 +235,6 @@ io.on('connection', (socket) => {
       io.to(roomId).emit(
         'car:skip-move',
         room.assignedCars,
-        // TODO: think about car crash
         room.endTimeOfTurn,
       );
     });
@@ -331,6 +330,7 @@ io.on('connection', (socket) => {
       coordinate: room.offenderBeforeMove.coordinate,
     };
     // TODO: remove car.moves?
+    // TODO: pass turn to another player here???
     room.assignedCars[car.index] = car;
     room.isCarCrash = false;
     room.offenderBeforeMove = null;

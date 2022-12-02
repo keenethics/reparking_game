@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import io from 'socket.io-client';
 
 import AppContext from '../../../context/AppContext';
 import ListOfParticipants from './ListOfParticipants';
-import Board from './Board.js';
+import Board from './Board';
+import Audio from './Audio';
 import styles from '../../../styles/pages/GameRoom/GameRoom.module.css';
 
 let userId;
@@ -29,6 +30,18 @@ const socket = io('http://localhost:8080', {
 function GameRoom () {
   const [error, setError] = useState(null);
   const context = useContext(AppContext);
+  const audioRef = useRef();
+
+  const playAudioOn = (eventName, cars) => {
+    if (eventName === 'game:start') {
+      audioRef.current.play();
+    } else {
+      const myCar = cars.find(c => c.userId === userId);
+      if (myCar?.hasTurn) {
+        audioRef.current.play();
+      }
+    }
+  };
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -71,6 +84,7 @@ function GameRoom () {
       context.setIsGameStarted(isGameStarted);
       context.setInitialTimerInSec(initialTimerInSec);
       context.setEndTimeOfTurn(endTimeOfTurn);
+      playAudioOn('game:start');
     });
 
     socket.on('game:disconnect', (cars) => {
@@ -86,6 +100,7 @@ function GameRoom () {
       context.setIsCarCrash(isCarCrash);
       context.setOffenderBeforeMove(offenderBeforeMove);
       context.setEndTimeOfTurn(endTimeOfTurn);
+      playAudioOn('car:make-move', cars);
     });
 
     socket.on('car:handle-crash', (cars, isCarCrash, offenderBeforeMove, endTimeOfTurn) => {
@@ -98,6 +113,7 @@ function GameRoom () {
     socket.on('car:skip-move', (cars, endTimeOfTurn) => {
       context.setCars(cars);
       context.setEndTimeOfTurn(endTimeOfTurn);
+      playAudioOn('car:skip-move', cars);
     });
 
     return () => {
@@ -123,6 +139,7 @@ function GameRoom () {
     <div className={styles.container}>
       <ListOfParticipants socket={socket} userId={userId} />
       <Board socket={socket} userId={userId} />
+      <Audio audioRef={audioRef} />
     </div>
   );
 }
