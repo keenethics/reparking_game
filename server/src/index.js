@@ -27,17 +27,18 @@ function calcEndTimeOfTurn (initialTimerInSec) {
 // TODO: refactor
 const makeMove = (shiftedCar, roomId) => {
   const room = rooms[roomId];
-  const assignedCars = room.assignedCars;
-  let copyOfCars = JSON.parse(JSON.stringify(assignedCars));
+  let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
   shiftedCar.hasTurn = false;
-  copyOfCars[shiftedCar.index] = { ...shiftedCar };
+  shiftedCar.offlineSkips = 0;
+  const indexOfShiftedCar = copyOfCars.findIndex(c => c.userId === shiftedCar.userId);
+  copyOfCars[indexOfShiftedCar] = shiftedCar;
 
   /* **** calculate cars positions on cells **** */
   copyOfCars = copyOfCars.map(c => {
     let rowIndex;
     let colIndex;
 
-    if (shiftedCar.index === c.index) {
+    if (c.userId === shiftedCar.userId) {
       return c;
     }
 
@@ -74,7 +75,7 @@ const makeMove = (shiftedCar, roomId) => {
   let isCrash = false;
   shiftedCar.moves.some(move => {
     copyOfCars.some(c => {
-      if (shiftedCar.index !== c.index && c.onCells.includes(move)) {
+      if (shiftedCar.userId !== c.userId && c.onCells.includes(move)) {
         isCrash = true;
         offender = shiftedCar;
         victim = c;
@@ -87,15 +88,23 @@ const makeMove = (shiftedCar, roomId) => {
   });
 
   if (isCrash) {
-    copyOfCars[offender.index] = { ...offender, penalty: offender.penalty + 2 };
-    copyOfCars[victim.index] = { ...victim, penalty: victim.penalty + 1 };
+    copyOfCars = copyOfCars.map(c => {
+      if (c.userId === offender.userId) {
+        c = { ...offender, penalty: offender.penalty + 2 };
+      }
+      if (c.userId === victim.userId) {
+        c = { ...victim, penalty: victim.penalty + 1 };
+      }
+
+      return c;
+    });
   }
 
   /* ******** pass a turn ********* */
-  const nextCarInRound = copyOfCars.slice(shiftedCar.index + 1).find(c => c.penalty === 0);
+  const nextCarInRound = copyOfCars.slice(indexOfShiftedCar + 1).find(c => c.penalty === 0);
 
   if (nextCarInRound) {
-    copyOfCars[nextCarInRound.index] = { ...nextCarInRound, hasTurn: true };
+    nextCarInRound.hasTurn = true;
   } else {
     copyOfCars = copyOfCars.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
     const nextCarInNextRound = copyOfCars.find(c => c.penalty === 0);
@@ -103,15 +112,14 @@ const makeMove = (shiftedCar, roomId) => {
     if (!nextCarInNextRound) {
       // setIsGameOver(true);
     } else {
-      copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, hasTurn: true };
+      nextCarInNextRound.hasTurn = true;
     }
   }
   /* ******************* */
 
   if (isCrash) {
     room.isCarCrash = true;
-    const carBeforeMove = room.assignedCars[shiftedCar.index];
-    room.offenderBeforeMove = carBeforeMove;
+    room.offenderBeforeMove = room.assignedCars[indexOfShiftedCar];
     room.assignedCars = copyOfCars;
     room.turnTransfer.cancel();
   } else {
@@ -211,13 +219,23 @@ io.on('connection', (socket) => {
     room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
     room.turnTransfer = scheduler.scheduleJob(room.endTimeOfTurn, function() {
       let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
-      const carWithTurn = copyOfCars.find(c => c.hasTurn);
-      copyOfCars[carWithTurn.index] = { ...carWithTurn, hasTurn: false };
+      const indexOfCarWithTurn = copyOfCars.findIndex(c => c.hasTurn);
+      const carWithTurn = copyOfCars[indexOfCarWithTurn];
+      carWithTurn.hasTurn = false;
+      carWithTurn.offlineSkips = carWithTurn.isOnline ? carWithTurn.offlineSkips : carWithTurn.offlineSkips + 1;
+      let indexOfNextCar;
 
-      const nextCarInRound = copyOfCars.slice(carWithTurn.index + 1).find(c => c.penalty === 0);
+      if (carWithTurn.offlineSkips === 2) {
+        copyOfCars.splice(indexOfCarWithTurn, 1);
+        indexOfNextCar = indexOfCarWithTurn;
+      } else {
+        indexOfNextCar = indexOfCarWithTurn + 1;
+      }
+
+      const nextCarInRound = copyOfCars.slice(indexOfNextCar).find(c => c.penalty === 0);
 
       if (nextCarInRound) {
-        copyOfCars[nextCarInRound.index] = { ...nextCarInRound, hasTurn: true };
+        nextCarInRound.hasTurn = true;
       } else {
         copyOfCars = copyOfCars.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
         const nextCarInNextRound = copyOfCars.find(c => c.penalty === 0);
@@ -225,7 +243,7 @@ io.on('connection', (socket) => {
         if (!nextCarInNextRound) {
           // setIsGameOver(true);
         } else {
-          copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, hasTurn: true };
+          nextCarInNextRound.hasTurn = true;
         }
       }
       room.assignedCars = copyOfCars;
@@ -262,7 +280,7 @@ io.on('connection', (socket) => {
   socket.on('car:make-move', (moveType, numberOfSteps) => {
     const { roomId, userId } = socket.handshake.auth;
     const room = rooms[roomId];
-    const carWithTurn = room.assignedCars.find(c => c.userId === userId);
+    const carWithTurn = room.assignedCars.find(c => c.hasTurn && c.userId === userId);
 
     if (carWithTurn) {
       const copyOfCar = JSON.parse(JSON.stringify(carWithTurn));
@@ -323,22 +341,18 @@ io.on('connection', (socket) => {
   socket.on('car:handle-crash', () => {
     const { roomId, userId } = socket.handshake.auth;
     const room = rooms[roomId];
-    let car = room.assignedCars[room.offenderBeforeMove.index];
-    car = {
-      ...car,
-      direction: room.offenderBeforeMove.direction,
-      coordinate: room.offenderBeforeMove.coordinate,
-    };
+    const car = room.assignedCars.find(c => c.userId === room.offenderBeforeMove.userId);
+    car.direction = room.offenderBeforeMove.direction;
+    car.coordinate = room.offenderBeforeMove.coordinate;
     // TODO: remove car.moves?
     // TODO: pass turn to another player here???
-    room.assignedCars[car.index] = car;
     room.isCarCrash = false;
     room.offenderBeforeMove = null;
     room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
     room.turnTransfer.reschedule(room.endTimeOfTurn);
 
     io.to(roomId).emit(
-      'car:hadnle-crash',
+      'car:handle-crash',
       room.assignedCars,
       room.isCarCrash,
       room.offenderBeforeMove,
@@ -351,13 +365,15 @@ io.on('connection', (socket) => {
     const room = rooms[roomId];
 
     let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
-    const carWithTurn = copyOfCars.find(c => c.userId === userId);
-    copyOfCars[carWithTurn.index] = { ...carWithTurn, hasTurn: false };
+    const indexOfCarWithTurn = copyOfCars.findIndex(c => c.hasTurn && c.userId === userId);
+    const carWithTurn = copyOfCars[indexOfCarWithTurn];
+    carWithTurn.hasTurn = false;
+    carWithTurn.offlineSkips = 0;
 
-    const nextCarInRound = copyOfCars.slice(carWithTurn.index + 1).find(c => c.penalty === 0);
+    const nextCarInRound = copyOfCars.slice(indexOfCarWithTurn + 1).find(c => c.penalty === 0);
 
     if (nextCarInRound) {
-      copyOfCars[nextCarInRound.index] = { ...nextCarInRound, hasTurn: true };
+      nextCarInRound.hasTurn = true;
     } else {
       copyOfCars = copyOfCars.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
       const nextCarInNextRound = copyOfCars.find(c => c.penalty === 0);
@@ -365,7 +381,7 @@ io.on('connection', (socket) => {
       if (!nextCarInNextRound) {
         // setIsGameOver(true);
       } else {
-        copyOfCars[nextCarInNextRound.index] = { ...nextCarInNextRound, hasTurn: true };
+        nextCarInNextRound.hasTurn = true;
       }
     }
     room.assignedCars = copyOfCars;
@@ -383,7 +399,7 @@ io.on('connection', (socket) => {
     console.log('- user disconnected', socket.id);
     const { roomId, userId } = socket.handshake.auth;
     if (roomId && userId) {
-      const assignedCar = rooms[roomId].assignedCars.find(item => item.userId === userId);
+      const assignedCar = rooms[roomId].assignedCars.find(c => c.userId === userId);
       if (assignedCar) {
         assignedCar.isOnline = false;
       }

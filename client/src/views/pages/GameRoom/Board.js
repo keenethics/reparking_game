@@ -23,7 +23,6 @@ function Board({ socket, userId }) {
     setTimer,
     endTimeOfTurn,
   } = context;
-  // const carWithTurn = cars.find(c => c.hasTurn);
   const myCar = cars.find(c => c.userId === userId);
 
   const isCarWithinBorders = (car) => {

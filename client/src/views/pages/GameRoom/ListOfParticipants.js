@@ -44,9 +44,10 @@ function ListOfParticipants({ socket, userId }) {
                   value={car.name}
                   onChange={(event => {
                     const { value } = event.target;
-                    const copy = JSON.parse(JSON.stringify(cars));
-                    copy[car.index] = { ...copy[car.index], name: value };
-                    setCars(copy);
+                    const copyOfCars = JSON.parse(JSON.stringify(cars));
+                    const myCar = copyOfCars.find(c => c.userId === userId);
+                    myCar.name = value;
+                    setCars(copyOfCars);
                     socket.emit('car:change-name', value);
                   })}
                   disabled={isDisabled}

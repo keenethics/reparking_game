@@ -20,8 +20,7 @@ function randomizeStartPositions(cars) {
 
   return cars.map(car => {
     const startPosition = randomizedCars.findIndex(c => c.index === car.index);
-
-    return {
+    const updatedCar = {
       ...car,
       startPosition,
       coordinate: {
@@ -29,6 +28,9 @@ function randomizeStartPositions(cars) {
         left: car.teamColor === TeamColor.blue ? startPosition * Game.cellWidth : (startPosition - numberOfPlayersInTeam) * Game.cellWidth,
       },
     };
+    delete updatedCar.index;
+
+    return updatedCar;
   });
 }
 
@@ -46,9 +48,9 @@ let initialDataOfCars = new Array(numberOfTeams * numberOfPlayersInTeam)
       teamColor,
       direction,
       penalty: 0,
-      // isTurn: idx > 0 ? false : true,
       hasTurn: false,
       isOnline: false,
+      offlineSkips: 0,
     };
   });
 
