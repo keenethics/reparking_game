@@ -6,3 +6,11 @@
   display: flex;
   gap: 30px;
 }
+
+@media only screen and (max-width: 992px) {
+  .container {
+    position: static;
+    transform: none;
+    display: block;
+  }
+}
