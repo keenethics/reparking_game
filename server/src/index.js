@@ -45,8 +45,8 @@ const makeMove = (shiftedCar, roomId) => {
     switch(c.direction) {
       case Car.Direction.up:
       case Car.Direction.down:
-        rowIndex = c.coordinate.top / Game.cellHeight;
-        colIndex = c.coordinate.left / Game.cellWidth;
+        rowIndex = parseInt(c.coordinate.top / Game.cellHeight);
+        colIndex = parseInt(c.coordinate.left / Game.cellWidth);
         return {
           ...c,
           onCells: [
@@ -56,8 +56,8 @@ const makeMove = (shiftedCar, roomId) => {
         };
       case Car.Direction.left:
       case Car.Direction.right:
-        rowIndex = (c.coordinate.top + Car.width / 2) / Game.cellHeight;
-        colIndex = (c.coordinate.left - Car.height / 4) / Game.cellWidth;
+        rowIndex = parseInt((c.coordinate.top + Car.width / 2) / Game.cellHeight);
+        colIndex = parseInt((c.coordinate.left - Car.height / 4) / Game.cellWidth);
         return {
           ...c,
           onCells: [

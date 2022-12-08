@@ -4,25 +4,24 @@
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
+  border-radius: 5px;
 }
 
 .blue {
   background-image: url("../../../assets/car_blue.svg");
-  border-radius: 10px;
 }
 
 .red {
   background-image: url("../../../assets/car_red.svg");
-  border-radius: 10px;
 }
 
 .number {
   color: white;
-  font-size: 33px;
+  font-size: 28px;
   font-weight: bold;
-  margin-top: 66px;
+  margin-top: 65px;
 }
 
 .highlight {
-  box-shadow: 0px 0px 0px 5px #d6d600 inset;
+  box-shadow: 0px 0px 0px 4px #d6d600;
 }

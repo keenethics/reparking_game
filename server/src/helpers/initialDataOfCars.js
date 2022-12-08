@@ -20,12 +20,14 @@ function randomizeStartPositions(cars) {
 
   return cars.map(car => {
     const startPosition = randomizedCars.findIndex(c => c.index === car.index);
+    const topOffset = (Game.cellHeight * 2 - Car.height) / 2;
+    const leftOffset = (Game.cellWidth - Car.width ) / 2;
     const updatedCar = {
       ...car,
       startPosition,
       coordinate: {
-        top: car.teamColor === TeamColor.blue ? 0 : Game.numberOfCellsVertically * Game.cellHeight - Car.height,
-        left: car.teamColor === TeamColor.blue ? startPosition * Game.cellWidth : (startPosition - numberOfPlayersInTeam) * Game.cellWidth,
+        top: car.teamColor === TeamColor.blue ? topOffset : ((Game.numberOfCellsVertically * Game.cellHeight - Car.height) - topOffset),
+        left: car.teamColor === TeamColor.blue ? (startPosition * Game.cellWidth + leftOffset) : ((startPosition - numberOfPlayersInTeam) * Game.cellWidth) + leftOffset,
       },
     };
     delete updatedCar.index;

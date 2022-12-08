@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { flushSync } from 'react-dom';
 
 import Timer from './Timer';
@@ -23,6 +23,7 @@ function Board({ socket, userId }) {
     setTimer,
     endTimeOfTurn,
   } = context;
+  const cellRefOnOver = useRef();
   const myCar = cars.find(c => c.userId === userId);
 
   const isCarWithinBorders = (car) => {
@@ -40,7 +41,7 @@ function Board({ socket, userId }) {
         return car.coordinate.top >= Game.border.top - Car.width / 2
           && car.coordinate.top <= Game.border.bottom - Car.height + Car.width / 2
           && car.coordinate.left >= Game.border.left + Car.height / 4
-          && car.coordinate.left <= Game.border.right- Car.width - Car.height / 4;
+          && car.coordinate.left <= Game.border.right - Car.width - Car.height / 4;
     }
   };
 
@@ -170,6 +171,7 @@ function Board({ socket, userId }) {
     if (!isGameStarted || !myCar?.hasTurn || isCarCrash) return;
 
     const { id: cellId } = event.target;
+    cellRefOnOver.current = event.target;
     const cell = boardCells.find(c => c.id === cellId);
 
     if (cell.action) {
@@ -203,6 +205,8 @@ function Board({ socket, userId }) {
   };
 
   const makeMove = (event) => {
+    if (!isGameStarted || !myCar?.hasTurn || isCarCrash) return;
+
     const { id: cellId } = event.target;
 
     const cell = boardCells.find(c => c.id === cellId);
@@ -253,7 +257,7 @@ function Board({ socket, userId }) {
               />
             ))}
             {cars.map((car, idx) => (
-              <CarModel key={idx} car={car} />
+              <CarModel key={idx} car={car} cellRefOnOver={cellRefOnOver} />
             ))}
           </div>
         </div>

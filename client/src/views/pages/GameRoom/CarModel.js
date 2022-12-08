@@ -2,7 +2,8 @@ import Car from '@reparking_game/shared/Car';
 
 import styles from '../../../styles/pages/GameRoom/CarModel.module.css';
 
-function CarModel({ car }) {
+function CarModel({ car, cellRefOnOver }) {
+
   const getCarRotation = () => {
     switch(car.direction) {
       case Car.Direction.up:
@@ -28,6 +29,36 @@ function CarModel({ car }) {
     }
   };
 
+  const onClick = (event) => {
+    const carElem = event.currentTarget;
+    carElem.style.zIndex = -1;
+    const cell = document.elementFromPoint(event.pageX, event.pageY);
+    carElem.style.zIndex = 'auto';
+    cell.click();
+  };
+
+  const onMouseOver = (event) => {
+    const carElem = event.currentTarget;
+    carElem.style.zIndex = -1;
+    const cell = document.elementFromPoint(event.pageX, event.pageY);
+    carElem.style.zIndex = 'auto';
+    const evt = new MouseEvent('mouseover', { bubbles: true, cancelable: false });
+    cell.dispatchEvent(evt);
+  };
+
+  const onMouseMove = (event) => {
+    const carElem = event.currentTarget;
+    carElem.style.zIndex = -1;
+    const cellFromPoint = document.elementFromPoint(event.pageX, event.pageY);
+    carElem.style.zIndex = 'auto';
+
+    if (cellFromPoint.id === cellRefOnOver.current.id) return;
+    const mouseOut = new MouseEvent('mouseout', { bubbles: true, cancelable: false });
+    cellFromPoint.dispatchEvent(mouseOut);
+    const mouseOver = new MouseEvent('mouseover', { bubbles: true, cancelable: false });
+    cellFromPoint.dispatchEvent(mouseOver);
+  };
+
   return (
     <div
       className={[styles.container, styles[car.teamColor], car.hasTurn && styles.highlight].join(' ')}
@@ -38,6 +69,9 @@ function CarModel({ car }) {
         left: `${car.coordinate.left}px`,
         transform: `rotate(${getCarRotation()}deg)`,
       }}
+      onClick={onClick}
+      onMouseOver={onMouseOver}
+      onMouseMove={onMouseMove}
     >
       <div
         className={styles.number}
