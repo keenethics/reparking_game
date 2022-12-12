@@ -4,7 +4,6 @@ import styles from '../../styles/components/ErrorBoundary.module.css';
 
 function ErrorBoundary () {
   const error = useRouteError();
-  console.error(error);
 
   return (
     <div className={styles.container}>

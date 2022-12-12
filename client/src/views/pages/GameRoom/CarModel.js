@@ -47,6 +47,8 @@ function CarModel({ car, cellRefOnOver }) {
   };
 
   const onMouseMove = (event) => {
+    if (!cellRefOnOver.current) return;
+
     const carElem = event.currentTarget;
     carElem.style.zIndex = -1;
     const cellFromPoint = document.elementFromPoint(event.pageX, event.pageY);

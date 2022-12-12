@@ -62,13 +62,9 @@ function GameRoom () {
       console.log('- disconnect');
     });
 
-    // TODO: can be a cause of bug
-    /*
     socket.on('connect_error', (err) => {
-      console.log('connect_error');
       setError(err);
     });
-    */
 
     socket.on('game:join', (cars, isGameStarted, isCarCrash, offenderBeforeMove, initialTimerInSec, endTimeOfTurn) => {
       context.setCars(cars);
@@ -119,7 +115,7 @@ function GameRoom () {
     return () => {
       socket.off('connect');
       socket.off('disconnect');
-      //socket.off('connect_error');
+      socket.off('connect_error');
       socket.off('game:join');
       socket.off('game:start');
       socket.off('game:disconnect');
@@ -130,7 +126,6 @@ function GameRoom () {
     };
   }, []);
 
-  // TODO: check react-router doc
   if (error) {
     throw error;
   }

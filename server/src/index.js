@@ -130,7 +130,7 @@ const makeMove = (shiftedCar, roomId) => {
 };
 
 io.use((socket, next) => {
-  const { roomId } = socket.handshake.auth;
+  const { roomId, userId } = socket.handshake.auth;
 
   if (roomId) {
     const room = rooms[roomId];
@@ -138,14 +138,14 @@ io.use((socket, next) => {
     if (!room) {
       return next(new Error('Game does not exist'));
     }
-    // TODO: throw error if room doesn't exist
-    // TODO: add contitions for joining the room
-    // TODO: if game started and user does not have a car then throw away
-    /*
-    if (room.assignedCars.length === 1) {
+    const carOfPlayer = room.assignedCars.find(c => c.userId === userId);
+
+    if (!room.isGameStarted && room.assignedCars.length === 16) {
       return next(new Error('Game is full of players'));
     }
-    */
+    if (room.isGameStarted && !carOfPlayer) {
+      return next(new Error('Game already started'));
+    }
   }
 
   next();
@@ -155,8 +155,6 @@ io.on('connection', (socket) => {
   console.log('+ user connected', socket.id, socket.handshake);
 
   socket.on('game:create', () => {
-    // TODO: test on client
-    // throw new Error('abc');
     const randomRoomId = uuidv4();
     rooms[randomRoomId] = {
       initialCars: initialDataOfCars,
@@ -167,7 +165,16 @@ io.on('connection', (socket) => {
       initialTimerInSec: 30,
       endTimeOfTurn: null,
       turnTransfer: null,
+      createdAt: new Date(),
     };
+    const msInHour = 1000 * 60 * 60;
+    Object.keys(rooms).forEach((key) => {
+      const room = rooms[key];
+
+      if (!room.isGameStarted && (Date.now() - room.createdAt.getTime()) > msInHour) {
+        delete rooms[key];
+      }
+    });
     const gameUrl = `/game/${randomRoomId}`;
 
     console.log('game:create: ', rooms); // TODO: check socket.rooms
@@ -218,8 +225,21 @@ io.on('connection', (socket) => {
     room.initialTimerInSec = initialTimerInSec;
     room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
     room.turnTransfer = scheduler.scheduleJob(room.endTimeOfTurn, function() {
+      const isSomebodyOnline = room.assignedCars.some(c => c.isOnline);
+
+      if (!isSomebodyOnline) {
+        room.turnTransfer.cancel();
+        delete rooms[roomId];
+        return;
+      }
       let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
       const indexOfCarWithTurn = copyOfCars.findIndex(c => c.hasTurn);
+
+      if (indexOfCarWithTurn === -1) {
+        room.turnTransfer.cancel();
+        delete rooms[roomId];
+        return;
+      }
       const carWithTurn = copyOfCars[indexOfCarWithTurn];
       carWithTurn.hasTurn = false;
       carWithTurn.offlineSkips = carWithTurn.isOnline ? carWithTurn.offlineSkips : carWithTurn.offlineSkips + 1;
@@ -403,7 +423,7 @@ io.on('connection', (socket) => {
       if (assignedCar) {
         assignedCar.isOnline = false;
       }
-      // TODO: remove car after some period of time
+
       io.to(roomId).emit('game:disconnect', rooms[roomId].assignedCars);
     }
   });
