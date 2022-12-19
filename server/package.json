@@ -1,19 +1,20 @@
 {
   "name": "server",
+  "type": "module",
   "scripts": {
-    "babel-node": "babel-node --only src --only ../shared src/index.js",
-    "start:dev-server": "nodemon --delay 2500ms --watch src --watch ../shared --exec npm run babel-node",
+    "start:dev-server": "nodemon --require dotenv/config --watch src --watch ../shared src/index.js dotenv_config_path=../.env.dev",
+    "start:prod-server": "node --require dotenv/config src/index.js dotenv_config_path=../.env.prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@babel/cli": "^7.19.3",
-    "@babel/core": "^7.20.2",
-    "@babel/node": "^7.20.2",
-    "@babel/preset-env": "^7.20.2",
     "express": "^4.18.2",
     "node-schedule": "^2.1.0",
-    "nodemon": "^2.0.20",
     "socket.io": "^4.5.3",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "dotenv": "^16.0.3",
+    "@reparking_game/shared": "file:../shared"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }

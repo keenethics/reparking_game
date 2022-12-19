@@ -1,0 +1,5 @@
+{
+  "name": "@reparking_game/shared",
+  "main": "index.js",
+  "type": "module"
+}

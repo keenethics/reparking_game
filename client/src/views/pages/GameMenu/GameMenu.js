@@ -4,7 +4,8 @@ import io from 'socket.io-client';
 
 import styles from '../../../styles/pages/GameMenu/GameMenu.module.css';
 
-const socket = io('http://localhost:8080');
+const REACT_APP_SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const socket = io(REACT_APP_SERVER_URL);
 
 function GameMenu () {
   const [gameUrl, setGameUrl] = useState('');
@@ -31,7 +32,7 @@ function GameMenu () {
   };
 
   const copyTextToClipboard = () => {
-    navigator.clipboard.writeText(`http://localhost:3000${gameUrl}`);
+    navigator.clipboard.writeText(`${REACT_APP_SERVER_URL}${gameUrl}`);
     clipboardBtn.current.innerHTML = '&#9989';
   };
 
@@ -45,7 +46,7 @@ function GameMenu () {
       {gameUrl && (
         <div className={styles.urlWrapper}>
           <button className={styles.linkBtn} onClick={goToGame}>
-            {`http://localhost:3000${gameUrl}`}
+            {`${REACT_APP_SERVER_URL}${gameUrl}`}
           </button>
           <button
             ref={clipboardBtn}

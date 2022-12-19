@@ -1,4 +1,4 @@
-import { Fragment, useContext } from 'react';
+import { useContext } from 'react';
 import AppContext from '../../../context/AppContext';
 
 import styles from '../../../styles/pages/GameRoom/ListOfParticipants.module.css';

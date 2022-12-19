@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Game from '@reparking_game/shared/Game';
+import { Game } from '@reparking_game/shared';
 
 const useStore = () => {
   const [boardCells, setBoardCells] = useState(

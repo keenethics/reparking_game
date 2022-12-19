@@ -1,26 +1,33 @@
 import express from 'express';
+import path from 'path';
 import http from 'http';
 import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import scheduler from 'node-schedule';
 
-import rooms from './store/rooms';
-import initialDataOfCars from './helpers/initialDataOfCars';
-import Car from '../../shared/Car'; // TODO: refactor
-import Game from '../../shared/Game'; // TODO: refactor
+import rooms from './store/rooms.js';
+import initialDataOfCars from './helpers/initialDataOfCars.js';
+import { Game, Car } from '@reparking_game/shared';
 
+const SERVER_PORT = process.env.SERVER_PORT;
 const expressApp = express();
+
+if (process.env.NODE_ENV === 'production') {
+  expressApp.use(express.static(path.join(process.cwd(), 'client_build')));
+  expressApp.get('/*', function (req, res) {
+    res.sendFile(path.join(process.cwd(), 'client_build', 'index.html'));
+  });
+}
 const httpServer = http.createServer(expressApp);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.SERVER_CORS_ORIGIN,
   },
 });
 
-const PORT = 8080; // TODO: env
-const NETWORK_DELAY = 1000;
-
 function calcEndTimeOfTurn (initialTimerInSec) {
+  const NETWORK_DELAY = 1000;
+
   return new Date(Date.now() + NETWORK_DELAY + initialTimerInSec * 1000);
 }
 
@@ -429,6 +436,6 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(PORT, () => {
-  console.log(`Listening on ${PORT}`);
+httpServer.listen(SERVER_PORT, () => {
+  console.log(`Listening on ${SERVER_PORT}`);
 });

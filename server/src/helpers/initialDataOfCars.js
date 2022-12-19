@@ -1,6 +1,5 @@
-import Car from '../../../shared/Car';
-import Game from '../../../shared/Game';
-import TeamColor from './TeamColor';
+import { Game, Car } from '@reparking_game/shared';
+import TeamColor from './TeamColor.js';
 
 const { numberOfTeams, numberOfPlayersInTeam } = Game;
 

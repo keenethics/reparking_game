@@ -3,8 +3,7 @@ import { flushSync } from 'react-dom';
 
 import Timer from './Timer';
 import CarModel from './CarModel';
-import Car from '@reparking_game/shared/Car';
-import Game from '@reparking_game/shared/Game';
+import { Car, Game } from '@reparking_game/shared';
 import AppContext from '../../../context/AppContext';
 import styles from '../../../styles/pages/GameRoom/Board.module.css';
 

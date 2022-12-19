@@ -10,7 +10,8 @@ import styles from '../../../styles/pages/GameRoom/GameRoom.module.css';
 
 let userId;
 
-const socket = io('http://localhost:8080', {
+const REACT_APP_SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const socket = io(REACT_APP_SERVER_URL, {
   auth: (cb) => {
     const splitPathname = window.location.pathname.split('/');
     const roomIdInUrl = splitPathname[splitPathname.length - 1];
