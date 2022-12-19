@@ -3,11 +3,47 @@
 }
 
 .rim {
-  padding: 10px;
+  box-sizing: border-box;
+  width: 690px;
+  height: 690px;
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 45px;
   box-shadow: 0px 5px 10px 0px rgb(0, 0, 0, 0.3);
   background-color: #268bd2;
   border-radius: 10px;
 }
+
+.boardNumbers {}
+
+.cellNumber {
+  width: 45px;
+  height: 75px;
+  font-size: 26px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.boardLetters {
+  display: flex;
+  padding-left: 45px;
+}
+
+.cellLetter {
+  width: 75px;
+  height: 45px;
+  font-size: 26px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .grid {
   position: relative;

@@ -64,9 +64,9 @@ function Timer ({
 
   return (
     <div className={styles.container}>
-      <div className={styles.progressBar}>
+      <div className={styles.progressWrapper}>
         <div
-          className={styles.progressValue}
+          className={styles.progressBar}
           style={{ width: `${!isGameStarted ? 100 : timer / initialTimerInSec * 100}%` }}
         ></div>
 

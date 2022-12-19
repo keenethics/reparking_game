@@ -235,6 +235,12 @@ function Board({ socket, userId }) {
         />
 
         <div className={styles.rim}>
+          <div className={styles.boardNumbers}>
+            {['8', '7', '6', '5', '4', '3', '2', '1'].map(number => (
+              <div key={number} className={styles.cellNumber}>{number}</div>
+            ))}
+          </div>
+
           <div
             className={styles.grid}
             style={{
@@ -257,6 +263,12 @@ function Board({ socket, userId }) {
             ))}
             {cars.map((car, idx) => (
               <CarModel key={idx} car={car} cellRefOnOver={cellRefOnOver} />
+            ))}
+          </div>
+
+          <div className={styles.boardLetters}>
+            {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => (
+              <div key={letter} className={styles.cellLetter}>{letter}</div>
             ))}
           </div>
         </div>
