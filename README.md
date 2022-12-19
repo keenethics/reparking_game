@@ -1,7 +1,7 @@
-# Reparking Game v3.7.0
+# Reparking Game v3.8.0
 
 
-## Setting up and running **DEV** app
+## Setting up and running DEV app
 ```
 git clone https://github.com/keenethics/reparking_game.git
 cd reparking_game
@@ -18,7 +18,7 @@ DISABLE_ESLINT_PLUGIN=true
 npm run start:dev
 ```
 
-## Setting up and running **PROD** app locally
+## Setting up and running PROD app locally
 ```
 git clone https://github.com/keenethics/reparking_game.git
 cd reparking_game
