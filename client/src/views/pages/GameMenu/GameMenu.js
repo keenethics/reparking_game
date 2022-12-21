@@ -10,7 +10,8 @@ const socket = io(REACT_APP_SERVER_URL);
 function GameMenu () {
   const [gameUrl, setGameUrl] = useState('');
   const navigate = useNavigate();
-  const clipboardBtn = useRef();
+  const newGameClipboardRef = useRef();
+  const lastGameClipboardRef = useRef();
 
   useEffect(() => {
     socket.on('game:create', (url) => {
@@ -26,38 +27,77 @@ function GameMenu () {
     socket.emit('game:create');
   };
 
-  const goToGame = () => {
-    socket.disconnect();
-    navigate(gameUrl);
+  const goToGame = (url) => {
+    navigate(url);
   };
 
-  const copyTextToClipboard = () => {
-    navigator.clipboard.writeText(`${REACT_APP_SERVER_URL}${gameUrl}`);
-    clipboardBtn.current.innerHTML = '&#9989';
+  const copyToClipboard = (url, ref) => {
+    navigator.clipboard.writeText(url);
+    ref.current.innerHTML = '&#9989';
   };
 
-  const changeToClipboardIcon = () => {
-    clipboardBtn.current.innerHTML = '&#128203';
+  const setBackClipboardIcon = (ref) => {
+    ref.current.innerHTML = '&#128203';
+  };
+
+  const getNewGameSection = () => {
+    return (
+      <div className={styles.gameSection}>
+        {gameUrl && (
+          <>
+            <div className={styles.sectionTitle}>New Game:</div>
+            <div className={styles.urlWrapper}>
+              <button className={styles.linkBtn} onClick={() => goToGame(gameUrl)}>
+                {`${REACT_APP_SERVER_URL}${gameUrl}`}
+              </button>
+              <button
+                ref={newGameClipboardRef}
+                className={styles.clipboardBtn}
+                onClick={() => copyToClipboard(`${REACT_APP_SERVER_URL}${gameUrl}`, newGameClipboardRef)}
+                onMouseOut={() => setBackClipboardIcon(newGameClipboardRef)}
+              >
+                &#128203;
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  const getLastGameSection = () => {
+    const roomId = localStorage.getItem('reparking-game-roomId');
+
+    return (
+      <div className={styles.gameSection}>
+        {roomId && (
+          <>
+            <div className={styles.sectionTitle}>Last Game:</div>
+            <div className={styles.urlWrapper}>
+              <button className={styles.linkBtn} onClick={() => goToGame(`/game/${roomId}`)}>
+                {`${REACT_APP_SERVER_URL}/game/${roomId}`}
+              </button>
+              <button
+                ref={lastGameClipboardRef}
+                className={styles.clipboardBtn}
+                onClick={() => copyToClipboard(`${REACT_APP_SERVER_URL}/game/${roomId}`, lastGameClipboardRef)}
+                onMouseOut={() => setBackClipboardIcon(lastGameClipboardRef)}
+              >
+                &#128203;
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    );
   };
 
   return (
     <div className={styles.container}>
       <button className={styles.createGameBtn} onClick={createGame}>Create Game</button>
-      {gameUrl && (
-        <div className={styles.urlWrapper}>
-          <button className={styles.linkBtn} onClick={goToGame}>
-            {`${REACT_APP_SERVER_URL}${gameUrl}`}
-          </button>
-          <button
-            ref={clipboardBtn}
-            className={styles.clipboardBtn}
-            onClick={copyTextToClipboard}
-            onMouseOut={changeToClipboardIcon}
-          >
-              &#128203;
-          </button>
-        </div>
-      )}
+
+      {getNewGameSection()}
+      {getLastGameSection()}
     </div>
   );
 }
