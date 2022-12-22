@@ -4,6 +4,7 @@ import styles from '../../../styles/pages/GameRoom/Timer.module.css';
 
 function Timer ({
   socket,
+  localTimeDeviation,
   myCar,
   isGameStarted,
   initialTimerInSec,
@@ -41,12 +42,12 @@ function Timer ({
     }
     */
     if (endTimeOfTurn) {
-      const now = Date.now();
+      const now = Date.now() + localTimeDeviation;
       const end = new Date(endTimeOfTurn).getTime();
 
       setTimer(Math.floor((end - now) / 1000));
     }
-  }, [endTimeOfTurn]);
+  }, [endTimeOfTurn, localTimeDeviation, setTimer]);
 
   useEffect(() => {
     let timerId;
@@ -60,7 +61,7 @@ function Timer ({
     return () => {
       clearTimeout(timerId);
     };
-  }, [isGameStarted, timer, isCarCrash]);
+  }, [isGameStarted, timer, isCarCrash, setTimer]);
 
   return (
     <div className={styles.container}>

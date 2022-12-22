@@ -26,7 +26,7 @@ const io = new Server(httpServer, {
 });
 
 function calcEndTimeOfTurn (initialTimerInSec) {
-  const NETWORK_DELAY = 1000;
+  const NETWORK_DELAY = 999;
 
   return new Date(Date.now() + NETWORK_DELAY + initialTimerInSec * 1000);
 }

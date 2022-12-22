@@ -7,7 +7,7 @@ import { Car, Game } from '@reparking_game/shared';
 import AppContext from '../../../context/AppContext';
 import styles from '../../../styles/pages/GameRoom/Board.module.css';
 
-function Board({ socket, userId }) {
+function Board({ socket, userId, localTimeDeviation }) {
   const context = useContext(AppContext);
   const {
     boardCells,
@@ -224,6 +224,7 @@ function Board({ socket, userId }) {
       <div className={styles.container}>
         <Timer
           socket={socket}
+          localTimeDeviation={localTimeDeviation}
           myCar={myCar}
           isGameStarted={isGameStarted}
           initialTimerInSec={initialTimerInSec}

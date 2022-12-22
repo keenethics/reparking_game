@@ -6,11 +6,12 @@ import AppContext from '../../../context/AppContext';
 import ListOfParticipants from './ListOfParticipants';
 import Board from './Board';
 import Audio from './Audio';
+import Spinner from '../../components/Spinner';
 import styles from '../../../styles/pages/GameRoom/GameRoom.module.css';
 
-let userId;
-
 const REACT_APP_SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
+let userId;
 const socket = io(REACT_APP_SERVER_URL, {
   auth: (cb) => {
     const splitPathname = window.location.pathname.split('/');
@@ -30,6 +31,9 @@ const socket = io(REACT_APP_SERVER_URL, {
 
 function GameRoom () {
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const isFirstRendering = useRef(true);
+  const [localTimeDeviation, setLocalTimeDeviation] = useState(null);
   const context = useContext(AppContext);
   const audioRef = useRef();
 
@@ -43,6 +47,25 @@ function GameRoom () {
       }
     }
   };
+
+  useEffect(() => {
+    async function fetchWorldTimeByIp() {
+      const ipifyRes = await fetch('https://api.ipify.org?format=json');
+      const ipifyData = await ipifyRes.json();
+      const worldtimeRes = await fetch(`https://worldtimeapi.org/api/ip/${ipifyData.ip}`);
+      const worldtimeData = await worldtimeRes.json();
+
+      setLocalTimeDeviation(new Date(worldtimeData.datetime).getTime() - Date.now());
+      setIsLoading(false);
+    }
+
+    if (isFirstRendering.current) {
+      fetchWorldTimeByIp();
+    }
+
+    return () => { isFirstRendering.current = false; }
+  }, []);
+
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -131,10 +154,14 @@ function GameRoom () {
     throw error;
   }
 
+  if (isLoading) {
+    return <Spinner />
+  }
+
   return (
     <div className={styles.container}>
       <ListOfParticipants socket={socket} userId={userId} />
-      <Board socket={socket} userId={userId} />
+      <Board socket={socket} userId={userId} localTimeDeviation={localTimeDeviation} />
       <Audio audioRef={audioRef} />
     </div>
   );
