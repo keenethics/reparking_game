@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
+import { ReactComponent as TelegramLogo } from '../../../assets/telegram_logo.svg';
 import styles from '../../../styles/pages/GameMenu/GameMenu.module.css';
 
 const REACT_APP_SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const REACT_APP_TELEGRAM_CHANNEL = process.env.REACT_APP_TELEGRAM_CHANNEL;
 const socket = io(REACT_APP_SERVER_URL);
 
 function GameMenu () {
@@ -40,7 +42,19 @@ function GameMenu () {
     ref.current.innerHTML = '&#128203';
   };
 
-  const getNewGameSection = () => {
+  const renderTelegramChannel = () => {
+    return REACT_APP_TELEGRAM_CHANNEL && (
+      <a
+        className={styles.telegramLink}
+        href={REACT_APP_TELEGRAM_CHANNEL}
+        target="_blank"
+      >
+        <TelegramLogo />
+      </a>
+    );
+  };
+
+  const renderNewGameSection = () => {
     return (
       <div className={styles.gameSection}>
         {gameUrl && (
@@ -65,7 +79,7 @@ function GameMenu () {
     );
   };
 
-  const getLastGameSection = () => {
+  const renderLastGameSection = () => {
     const roomId = localStorage.getItem('reparking-game-roomId');
 
     return (
@@ -93,12 +107,16 @@ function GameMenu () {
   };
 
   return (
-    <div className={styles.container}>
-      <button className={styles.createGameBtn} onClick={createGame}>Create Game</button>
+    <>
+      {renderTelegramChannel()}
+      <div className={styles.container}>
 
-      {getNewGameSection()}
-      {getLastGameSection()}
-    </div>
+        <button className={styles.createGameBtn} onClick={createGame}>Create Game</button>
+
+        {renderNewGameSection()}
+        {renderLastGameSection()}
+      </div>
+    </>
   );
 }
 

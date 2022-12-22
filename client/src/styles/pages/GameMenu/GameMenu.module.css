@@ -1,3 +1,12 @@
+.telegramLink {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  margin: 30px 100px 0px 0px;
+}
+
 .container {
   display: flex;
   flex-direction: column;

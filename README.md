@@ -1,4 +1,4 @@
-# Reparking Game v3.10.2
+# Reparking Game v3.11.0
 
 
 ## Setting up and running DEV app
@@ -10,8 +10,9 @@ npm install
 `.env.dev`
 ```
 SERVER_PORT=
-REACT_APP_SERVER_URL=
 SERVER_CORS_ORIGIN=
+REACT_APP_SERVER_URL=
+REACT_APP_TELEGRAM_CHANNEL=
 DISABLE_ESLINT_PLUGIN=true
 ```
 ```
@@ -28,6 +29,7 @@ npm install
 ```
 SERVER_PORT=
 REACT_APP_SERVER_URL=
+REACT_APP_TELEGRAM_CHANNEL=
 NODE_ENV=production
 ```
 ```
@@ -39,7 +41,8 @@ npm run start:prod-server
 ## Deploying to Fly
 1. Install Flyctl
 2. Log in to Fly
-3. Execute the command
+3. If `SERVER_URL` or `TELEGRAM_CHANNEL` changes, then update `Dockerfile`
+4. Execute the command
 ```
 npm run deploy
 ```
