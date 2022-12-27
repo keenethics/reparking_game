@@ -35,8 +35,9 @@ function calcEndTimeOfTurn (initialTimerInSec) {
 const makeMove = (shiftedCar, roomId) => {
   const room = rooms[roomId];
   let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
-  shiftedCar.hasTurn = false;
   shiftedCar.offlineSkips = 0;
+  shiftedCar.onlineSkips = 0;
+  shiftedCar.hasTurn = false;
   const indexOfShiftedCar = copyOfCars.findIndex(c => c.userId === shiftedCar.userId);
   copyOfCars[indexOfShiftedCar] = shiftedCar;
 
@@ -174,14 +175,18 @@ io.on('connection', (socket) => {
       turnTransfer: null,
       createdAt: new Date(),
     };
-    const msInHour = 1000 * 60 * 60;
-    Object.keys(rooms).forEach((key) => {
-      const room = rooms[key];
+    function removeIdleGames() {
+      const msInHour = 1000 * 60 * 60;
+      Object.keys(rooms).forEach((key) => {
+        const room = rooms[key];
 
-      if (!room.isGameStarted && (Date.now() - room.createdAt.getTime()) > msInHour) {
-        delete rooms[key];
-      }
-    });
+        if (!room.isGameStarted && (Date.now() - room.createdAt.getTime()) > msInHour) {
+          delete rooms[key];
+        }
+      });
+    }
+
+    removeIdleGames();
     const gameUrl = `/game/${randomRoomId}`;
 
     console.log('game:create: ', rooms); // TODO: check socket.rooms
@@ -194,7 +199,7 @@ io.on('connection', (socket) => {
 
     const { roomId, userId } = socket.handshake.auth;
     const room = rooms[roomId];
-    socket.join(roomId);
+    socket.join(roomId); // TODO: check if there is not duplicate
     const assignedCar = room.assignedCars.find(item => item.userId === userId);
 
     if (!assignedCar) {
@@ -202,7 +207,6 @@ io.on('connection', (socket) => {
         {
           ...room.initialCars[room.assignedCars.length],
           userId,
-          isLeader: room.assignedCars.length === 0 ? true : false,
           isOnline: true,
         },
       );
@@ -248,11 +252,15 @@ io.on('connection', (socket) => {
         return;
       }
       const carWithTurn = copyOfCars[indexOfCarWithTurn];
+      if (carWithTurn.isOnline) {
+        carWithTurn.onlineSkips += 1;
+      } else {
+        carWithTurn.offlineSkips += 1;
+      }
       carWithTurn.hasTurn = false;
-      carWithTurn.offlineSkips = carWithTurn.isOnline ? carWithTurn.offlineSkips : carWithTurn.offlineSkips + 1;
       let indexOfNextCar;
 
-      if (carWithTurn.offlineSkips === 2) {
+      if (carWithTurn.offlineSkips === 2 || carWithTurn.onlineSkips === 4) {
         copyOfCars.splice(indexOfCarWithTurn, 1);
         indexOfNextCar = indexOfCarWithTurn;
       } else {
@@ -394,8 +402,9 @@ io.on('connection', (socket) => {
     let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
     const indexOfCarWithTurn = copyOfCars.findIndex(c => c.hasTurn && c.userId === userId);
     const carWithTurn = copyOfCars[indexOfCarWithTurn];
-    carWithTurn.hasTurn = false;
     carWithTurn.offlineSkips = 0;
+    carWithTurn.onlineSkips += 1;
+    carWithTurn.hasTurn = false;
 
     const nextCarInRound = copyOfCars.slice(indexOfCarWithTurn + 1).find(c => c.penalty === 0);
 

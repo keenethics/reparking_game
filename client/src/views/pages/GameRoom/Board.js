@@ -274,14 +274,19 @@ function Board({ socket, userId, localTimeDeviation }) {
           </div>
         </div>
 
-        <div className={styles.skipBtnWrapper}>
+        <div className={styles.skipContainer}>
           <button
             className={styles.skipBtn}
             onClick={handleSkipTurn}
-            disabled={!isGameStarted || !myCar?.hasTurn || isCarCrash}
+            disabled={!isGameStarted || !myCar?.hasTurn || isCarCrash || (myCar?.hasTurn && myCar?.onlineSkips === 3)}
           >
             Skip
           </button>
+          {myCar?.hasTurn && myCar?.onlineSkips === 3 && (
+            <div className={styles.skipMsg}>
+              Please make a move or you will be removed from the game
+            </div>
+          )}
         </div>
       </div>
 

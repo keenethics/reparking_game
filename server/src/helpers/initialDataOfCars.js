@@ -41,6 +41,7 @@ let initialDataOfCars = new Array(numberOfTeams * numberOfPlayersInTeam)
     const name = `Player${idx + 1}`;
     const teamColor = idx % 2 === 0 ? TeamColor.blue : TeamColor.red;
     const direction = idx % 2 === 0 ? Car.Direction.down : Car.Direction.up;
+    const isLeader = idx === 0;
 
     return {
       index: idx,
@@ -51,7 +52,9 @@ let initialDataOfCars = new Array(numberOfTeams * numberOfPlayersInTeam)
       penalty: 0,
       hasTurn: false,
       isOnline: false,
+      isLeader,
       offlineSkips: 0,
+      onlineSkips: 0,
     };
   });
 
