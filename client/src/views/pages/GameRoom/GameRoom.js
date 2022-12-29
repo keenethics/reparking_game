@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import io from 'socket.io-client';
 
 import AppContext from '../../../context/AppContext';
+import IdleTimerToast from './IdleTimerToast';
 import ListOfParticipants from './ListOfParticipants';
 import Board from './Board';
 import Audio from './Audio';
@@ -10,6 +11,9 @@ import Spinner from '../../components/Spinner';
 import styles from '../../../styles/pages/GameRoom/GameRoom.module.css';
 
 const REACT_APP_SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const REACT_APP_USE_WORLD_TIME = process.env.REACT_APP_USE_WORLD_TIME;
+const TOAST_IDLE_TIME = 4 * 60;
+const MAX_IDLE_TIME = 5 * 60;
 
 let userId;
 const socket = io(REACT_APP_SERVER_URL, {
@@ -28,12 +32,13 @@ const socket = io(REACT_APP_SERVER_URL, {
     cb({ roomId, userId });
   },
 });
-
 function GameRoom () {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const isFirstRendering = useRef(true);
-  const [localTimeDeviation, setLocalTimeDeviation] = useState(null);
+  const idleTime = useRef(0);
+  const [isIdleToastShown, setIsIdleToastShown] = useState(false);
+  const [localTimeDeviation, setLocalTimeDeviation] = useState(0);
   const context = useContext(AppContext);
   const audioRef = useRef();
 
@@ -48,6 +53,49 @@ function GameRoom () {
     }
   };
 
+  const resetIdleTimer = () => {
+    idleTime.current = 0;
+    setIsIdleToastShown(false);
+  }
+
+  useEffect(() => {
+    let idleTimerId;
+    function runIdleTimer() {
+      return setInterval(() => {
+        idleTime.current += 1;
+
+        if (idleTime.current === TOAST_IDLE_TIME) {
+          setIsIdleToastShown(true);
+        }
+        if (idleTime.current === MAX_IDLE_TIME) {
+          socket.emit('car:remove-idle-player');
+          setIsIdleToastShown(false);
+          clearInterval(idleTimerId);
+        }
+      }, 1000);
+    }
+    idleTimerId = runIdleTimer();
+    const onMouseDown = () => resetIdleTimer();
+    // const onMouseMove = () => resetIdleTimer();
+    const onScroll = () => resetIdleTimer();
+    const onKeyDown = () => resetIdleTimer();
+    const onTouchStart = () => resetIdleTimer();
+    document.addEventListener('mousedown', onMouseDown);
+    // document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('scroll', onScroll);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('touchstart', onTouchStart);
+
+    return () => {
+      clearInterval(idleTimerId);
+      document.removeEventListener('mousedown', onMouseDown);
+      // document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('scroll', onScroll);
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('touchstart', onTouchStart);
+    };
+  }, []);
+
   useEffect(() => {
     async function fetchWorldTimeByIp() {
       const ipifyRes = await fetch('https://api.ipify.org?format=json');
@@ -59,8 +107,10 @@ function GameRoom () {
       setIsLoading(false);
     }
 
-    if (isFirstRendering.current) {
+    if (REACT_APP_USE_WORLD_TIME === 'true' && isFirstRendering.current) {
       fetchWorldTimeByIp();
+    } else {
+      setIsLoading(false);
     }
 
     return () => { isFirstRendering.current = false; }
@@ -136,6 +186,14 @@ function GameRoom () {
       playAudioOn('car:skip-move', cars);
     });
 
+    socket.on('car:remove-idle-player', (cars, endTimeOfTurn, hasRemovedCarTurn) => {
+      context.setCars(cars);
+      context.setEndTimeOfTurn(endTimeOfTurn);
+      if (hasRemovedCarTurn) {
+        playAudioOn('car:remove-idle-player', cars);
+      }
+    });
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -147,6 +205,7 @@ function GameRoom () {
       socket.off('car:make-move');
       socket.off('car:handle-crash');
       socket.off('car:skip-move');
+      socket.off('car:remove-idle-player');
     };
   }, []);
 
@@ -159,11 +218,14 @@ function GameRoom () {
   }
 
   return (
-    <div className={styles.container}>
-      <ListOfParticipants socket={socket} userId={userId} />
-      <Board socket={socket} userId={userId} localTimeDeviation={localTimeDeviation} />
-      <Audio audioRef={audioRef} />
-    </div>
+    <>
+      <IdleTimerToast isShown={isIdleToastShown} resetIdleTimer={resetIdleTimer} />
+      <div className={styles.container}>
+        <ListOfParticipants socket={socket} userId={userId} />
+        <Board socket={socket} userId={userId} localTimeDeviation={localTimeDeviation} />
+        <Audio audioRef={audioRef} />
+      </div>
+    </>
   );
 }
 

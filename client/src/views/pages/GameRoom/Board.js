@@ -284,7 +284,7 @@ function Board({ socket, userId, localTimeDeviation }) {
           </button>
           {myCar?.hasTurn && myCar?.onlineSkips === 3 && (
             <div className={styles.skipMsg}>
-              Please make a move or you will be removed from the game
+              Please make any move otherwise you will be removed from the game
             </div>
           )}
         </div>

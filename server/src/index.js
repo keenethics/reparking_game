@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import scheduler from 'node-schedule';
 
 import rooms from './store/rooms.js';
-import initialDataOfCars from './helpers/initialDataOfCars.js';
+import getInitialCars from './helpers/getInitialCars.js';
 import { Game, Car } from '@reparking_game/shared';
 
 const SERVER_PORT = process.env.SERVER_PORT;
@@ -165,7 +165,7 @@ io.on('connection', (socket) => {
   socket.on('game:create', () => {
     const randomRoomId = uuidv4();
     rooms[randomRoomId] = {
-      initialCars: initialDataOfCars,
+      initialCars: getInitialCars(),
       assignedCars: [],
       isGameStarted: false,
       isCarCrash: false,
@@ -202,16 +202,17 @@ io.on('connection', (socket) => {
     socket.join(roomId); // TODO: check if there is not duplicate
     const assignedCar = room.assignedCars.find(item => item.userId === userId);
 
-    if (!assignedCar) {
+    if (assignedCar) {
+      assignedCar.isOnline = true;
+    }
+    if (!assignedCar && room.initialCars.length) {
       room.assignedCars.push(
         {
-          ...room.initialCars[room.assignedCars.length],
+          ...room.initialCars.shift(),
           userId,
           isOnline: true,
         },
       );
-    } else {
-      assignedCar.isOnline = true;
     }
 
     console.log('game:join - rooms: ', rooms);
@@ -431,10 +432,59 @@ io.on('connection', (socket) => {
     );
   });
 
+  socket.on('car:remove-idle-player', () => {
+    const { roomId, userId } = socket.handshake.auth;
+    const room = rooms[roomId];
+    let copyOfCars = JSON.parse(JSON.stringify(room.assignedCars));
+    let hasRemovedCarTurn = false;
+    const indexOfIdleCar = copyOfCars.findIndex(c => c.userId === userId);
+    const idleCar = copyOfCars[indexOfIdleCar];
+
+    if (idleCar) {
+      copyOfCars.splice(indexOfIdleCar, 1);
+
+      if (idleCar.isLeader) {
+        if (copyOfCars.length) {
+          copyOfCars[0].isLeader = true;
+        } else if (room.initialCars.length) {
+          room.initialCars[0].isLeader = true;
+        }
+      }
+      if (idleCar.hasTurn) {
+        hasRemovedCarTurn = true;
+        const indexOfNextCar = indexOfIdleCar;
+        const nextCarInRound = copyOfCars.slice(indexOfIdleCar).find(c => c.penalty === 0);
+
+        if (nextCarInRound) {
+          nextCarInRound.hasTurn = true;
+        } else {
+          copyOfCars = copyOfCars.map(c => ({ ...c, penalty: c.penalty > 0 ? c.penalty - 1 : 0 }));
+          const nextCarInNextRound = copyOfCars.find(c => c.penalty === 0);
+
+          if (!nextCarInNextRound) {
+            // setIsGameOver(true);
+          } else {
+            nextCarInNextRound.hasTurn = true;
+          }
+        }
+        room.endTimeOfTurn = calcEndTimeOfTurn(room.initialTimerInSec);
+        room.turnTransfer.reschedule(room.endTimeOfTurn);
+      }
+      room.assignedCars = copyOfCars;
+    }
+
+    io.to(roomId).emit(
+      'car:remove-idle-player',
+      room.assignedCars,
+      room.endTimeOfTurn,
+      hasRemovedCarTurn,
+    );
+  });
+
   socket.on('disconnect', () => {
     console.log('- user disconnected', socket.id);
     const { roomId, userId } = socket.handshake.auth;
-    if (roomId && userId) {
+    if (roomId && userId && rooms[roomId]) {
       const assignedCar = rooms[roomId].assignedCars.find(c => c.userId === userId);
       if (assignedCar) {
         assignedCar.isOnline = false;

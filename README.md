@@ -1,4 +1,4 @@
-# Reparking Game v3.12.0
+# Reparking Game v3.13.3
 
 
 ## Setting up and running DEV app
@@ -13,6 +13,7 @@ SERVER_PORT=
 SERVER_CORS_ORIGIN=
 REACT_APP_SERVER_URL=
 REACT_APP_TELEGRAM_CHANNEL=
+REACT_APP_USE_WORLD_TIME=true/false
 DISABLE_ESLINT_PLUGIN=true
 ```
 ```
@@ -30,6 +31,7 @@ npm install
 SERVER_PORT=
 REACT_APP_SERVER_URL=
 REACT_APP_TELEGRAM_CHANNEL=
+REACT_APP_USE_WORLD_TIME=true
 NODE_ENV=production
 ```
 ```

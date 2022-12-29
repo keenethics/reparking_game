@@ -35,29 +35,32 @@ function randomizeStartPositions(cars) {
   });
 }
 
-let initialDataOfCars = new Array(numberOfTeams * numberOfPlayersInTeam)
-  .fill()
-  .map((item, idx) => {
-    const name = `Player${idx + 1}`;
-    const teamColor = idx % 2 === 0 ? TeamColor.blue : TeamColor.red;
-    const direction = idx % 2 === 0 ? Car.Direction.down : Car.Direction.up;
-    const isLeader = idx === 0;
+function getInitialCars() {
+  let initialCars = new Array(numberOfTeams * numberOfPlayersInTeam)
+    .fill()
+    .map((item, idx) => {
+      const name = `Player${idx + 1}`;
+      const teamColor = idx % 2 === 0 ? TeamColor.blue : TeamColor.red;
+      const direction = idx % 2 === 0 ? Car.Direction.down : Car.Direction.up;
+      const isLeader = idx === 0;
 
-    return {
-      index: idx,
-      name,
-      number: idx + 1,
-      teamColor,
-      direction,
-      penalty: 0,
-      hasTurn: false,
-      isOnline: false,
-      isLeader,
-      offlineSkips: 0,
-      onlineSkips: 0,
-    };
-  });
+      return {
+        index: idx,
+        name,
+        number: idx + 1,
+        teamColor,
+        direction,
+        penalty: 0,
+        hasTurn: false,
+        isOnline: false,
+        isLeader,
+        offlineSkips: 0,
+        onlineSkips: 0,
+      };
+    });
+  initialCars = randomizeStartPositions(initialCars);
 
-initialDataOfCars = randomizeStartPositions(initialDataOfCars);
+  return initialCars;
+}
 
-export default initialDataOfCars;
+export default getInitialCars;
