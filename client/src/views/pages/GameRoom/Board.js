@@ -14,7 +14,6 @@ function Board({ socket, userId, localTimeDeviation }) {
     setBoardCells,
     isGameStarted,
     isCarCrash,
-    offenderBeforeMove,
     cars,
     initialTimerInSec,
     setInitialTimerInSec,
@@ -160,7 +159,6 @@ function Board({ socket, userId, localTimeDeviation }) {
       });
     }
   }, [cars]);
-  //}, [carWithTurn?.userId]);
 
   const handleSkipTurn = () => {
     socket.emit('car:skip-move');
@@ -187,7 +185,6 @@ function Board({ socket, userId, localTimeDeviation }) {
     if (!isGameStarted || !myCar?.hasTurn || isCarCrash) return;
 
     flushSync(() => {
-
       setBoardCells((prevCells) => {
         return prevCells.map(c => {
           const cell = JSON.parse(JSON.stringify(c));
@@ -199,7 +196,6 @@ function Board({ socket, userId, localTimeDeviation }) {
           return cell;
         });
       });
-
     });
   };
 
@@ -215,92 +211,75 @@ function Board({ socket, userId, localTimeDeviation }) {
     }
   };
 
-  const handleCarCrash = () => {
-    socket.emit('car:handle-crash');
-  };
-
   return (
-    <>
-      <div className={styles.container}>
-        <Timer
-          socket={socket}
-          localTimeDeviation={localTimeDeviation}
-          myCar={myCar}
-          isGameStarted={isGameStarted}
-          initialTimerInSec={initialTimerInSec}
-          setInitialTimerInSec={setInitialTimerInSec}
-          timer={timer}
-          setTimer={setTimer}
-          endTimeOfTurn={endTimeOfTurn}
-          isCarCrash={isCarCrash}
-        />
+    <div className={styles.container}>
+      <Timer
+        socket={socket}
+        localTimeDeviation={localTimeDeviation}
+        myCar={myCar}
+        isGameStarted={isGameStarted}
+        initialTimerInSec={initialTimerInSec}
+        setInitialTimerInSec={setInitialTimerInSec}
+        timer={timer}
+        setTimer={setTimer}
+        endTimeOfTurn={endTimeOfTurn}
+        isCarCrash={isCarCrash}
+      />
 
-        <div className={styles.rim}>
-          <div className={styles.boardNumbers}>
-            {['8', '7', '6', '5', '4', '3', '2', '1'].map(number => (
-              <div key={number} className={styles.cellNumber}>{number}</div>
-            ))}
-          </div>
-
-          <div
-            className={styles.grid}
-            style={{
-              width: `${Game.cellWidth * Game.numberOfCellsHorizontally}px`,
-              height: `${Game.cellHeight * Game.numberOfCellsVertically}px`,
-              gridTemplateColumns: `repeat(${Game.numberOfCellsVertically}, ${Game.cellHeight}px)`,
-              gridTemplateRows: `repeat(${Game.numberOfCellsHorizontally}, ${Game.cellWidth}px)`,
-            }}
-          >
-            {boardCells.map((cell, idx) => (
-              <div
-                key={cell.id}
-                id={cell.id}
-                className={styles.cell}
-                style={cell.style}
-                onMouseOver={highlightMove}
-                onMouseOut={clearHighlightOfMove}
-                onClick={makeMove}
-              />
-            ))}
-            {cars.map((car, idx) => (
-              <CarModel key={idx} car={car} cellRefOnOver={cellRefOnOver} />
-            ))}
-          </div>
-
-          <div className={styles.boardLetters}>
-            {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => (
-              <div key={letter} className={styles.cellLetter}>{letter}</div>
-            ))}
-          </div>
+      <div className={styles.rim}>
+        <div className={styles.boardNumbers}>
+          {['8', '7', '6', '5', '4', '3', '2', '1'].map(number => (
+            <div key={number} className={styles.cellNumber}>{number}</div>
+          ))}
         </div>
 
-        <div className={styles.skipContainer}>
-          <button
-            className={styles.skipBtn}
-            onClick={handleSkipTurn}
-            disabled={!isGameStarted || !myCar?.hasTurn || isCarCrash || (myCar?.hasTurn && myCar?.onlineSkips === 3)}
-          >
-            Skip
-          </button>
-          {myCar?.hasTurn && myCar?.onlineSkips === 3 && (
-            <div className={styles.skipMsg}>
-              Please make any move otherwise you will be removed from the game
-            </div>
-          )}
+        <div
+          className={styles.grid}
+          style={{
+            width: `${Game.cellWidth * Game.numberOfCellsHorizontally}px`,
+            height: `${Game.cellHeight * Game.numberOfCellsVertically}px`,
+            gridTemplateColumns: `repeat(${Game.numberOfCellsVertically}, ${Game.cellHeight}px)`,
+            gridTemplateRows: `repeat(${Game.numberOfCellsHorizontally}, ${Game.cellWidth}px)`,
+          }}
+        >
+          {boardCells.map((cell, idx) => (
+            <div
+              key={cell.id}
+              id={cell.id}
+              className={styles.cell}
+              style={cell.style}
+              onMouseOver={highlightMove}
+              onMouseOut={clearHighlightOfMove}
+              onClick={makeMove}
+            />
+          ))}
+          {cars.map((car, idx) => (
+            <CarModel key={idx} car={car} cellRefOnOver={cellRefOnOver} />
+          ))}
+        </div>
+
+        <div className={styles.boardLetters}>
+          {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => (
+            <div key={letter} className={styles.cellLetter}>{letter}</div>
+          ))}
         </div>
       </div>
 
-      {isCarCrash && (
-        <div className={styles.toastBg}>
-          <div className={styles.toastCarCrash}>
-            <div className={styles.toastTitle}>Car crash</div>
-            {offenderBeforeMove?.userId === userId && (
-              <button className={styles.toastBtn} onClick={handleCarCrash}>&#128110;</button>
-            )}
+      <div className={styles.skipContainer}>
+        <button
+          className={styles.skipBtn}
+          onClick={handleSkipTurn}
+          disabled={!isGameStarted || !myCar?.hasTurn || isCarCrash || (myCar?.hasTurn && myCar?.onlineSkips === 3)}
+        >
+          Skip
+        </button>
+        {myCar?.hasTurn && myCar?.onlineSkips === 3 && (
+          <div className={styles.skipMsg}>
+            Make move otherwise you will be removed
           </div>
-        </div>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 }
 

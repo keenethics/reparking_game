@@ -13,10 +13,10 @@ function ListOfParticipants({ socket, userId }) {
         <div className={styles.row}>
           <div className={styles.col1} />
           <div className={styles.col2} />
-          <div className={[styles.col3, styles.tHead].join(' ')}>
-            <div className={styles.item1}>Car</div>
-            <div className={styles.item2}>Name</div>
-            <div className={styles.item3}>Penalty</div>
+          <div className={[styles.col3, styles.tHead].join(' ')}>Car</div>
+          <div className={[styles.col4, styles.tHead].join(' ')}>
+            <div className={styles.carName}>Name</div>
+            <div className={styles.carPenalty}>Penalty</div>
           </div>
         </div>
         {cars.map((car, idx) => {
@@ -29,18 +29,19 @@ function ListOfParticipants({ socket, userId }) {
               </div>
 
               <div className={styles.col2}>
-                {car.isOnline ?
-                  <div className={styles.online} /> : <div className={styles.offline} />
-                }
+                <div className={car.isOnline ? styles.online : styles.offline} />
               </div>
 
-              <div className={[styles.col3, car.hasTurn && styles.turn].join(' ')}>
-                <div className={[styles.item1, car.penalty && styles.penalty].join(' ')}>
-                  {car.number}
+              <div className={styles.col3}>
+                <div className={styles.teamColor} style={{ backgroundColor: `${car.teamColor}` }}>
+                  <div className={styles.carNumber}>{car.number}</div>
                 </div>
+              </div>
+
+              <div className={[styles.col4, car.hasTurn && styles.turn].join(' ')}>
                 <input
                   type="text"
-                  className={[styles.item2, car.penalty && styles.penalty].join(' ')}
+                  className={[styles.carName, car.penalty && styles.penaltyBg].join(' ')}
                   value={car.name}
                   onChange={(event => {
                     const { value } = event.target;
@@ -52,7 +53,7 @@ function ListOfParticipants({ socket, userId }) {
                   })}
                   disabled={isDisabled}
                 />
-                <div className={[styles.item3, car.penalty && styles.penalty].join(' ')}>
+                <div className={[styles.carPenalty, car.penalty && styles.penaltyBg].join(' ')}>
                   {car.penalty ? car.penalty : ''}
                 </div>
               </div>

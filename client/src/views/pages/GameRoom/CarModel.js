@@ -1,6 +1,7 @@
 import { Car } from '@reparking_game/shared';
 
 import styles from '../../../styles/pages/GameRoom/CarModel.module.css';
+import { ReactComponent as CarSvg } from '../../../assets/car_gray.svg';
 
 function CarModel({ car, cellRefOnOver }) {
 
@@ -63,7 +64,7 @@ function CarModel({ car, cellRefOnOver }) {
 
   return (
     <div
-      className={[styles.container, styles[car.teamColor], car.hasTurn && styles.highlight].join(' ')}
+      className={[styles.container, car.hasTurn && styles.highlight].join(' ')}
       style={{
         width: `${Car.width}px`,
         height: `${Car.height}px`,
@@ -75,6 +76,7 @@ function CarModel({ car, cellRefOnOver }) {
       onMouseOver={onMouseOver}
       onMouseMove={onMouseMove}
     >
+      <CarSvg fill={car.teamColor} />
       <div
         className={styles.number}
         style={{ transform: `rotate(${getNumberRotation()}deg)` }}

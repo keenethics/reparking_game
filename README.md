@@ -1,4 +1,4 @@
-# Reparking Game v3.14.0
+# Reparking Game v4.0.0
 
 
 ## Setting up and running DEV app
@@ -47,6 +47,21 @@ npm run start:prod-server
 4. Execute the command
 ```
 npm run deploy
+```
+
+## API
+`POST /api/game/create`
+```
+curl -X 'POST' \
+  --url 'hostname/api/game/create' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{"mode": "solo/duo/quartet/octet"}'
+
+{
+  "urls": ["/game/:gameId/team/:teamN", ...],
+  "mode": "solo/duo/quartet/octet"
+}
 ```
 
 ![Game view](game_view.png)

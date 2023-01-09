@@ -3,11 +3,70 @@
   height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
-@media only screen and (max-width: 992px) {
-  .container {
-    align-items: flex-start;
-  }
+.topbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 30px 50px 0px 0px;
+  display: flex;
+}
+
+.telegramLink {
+  width: 30px;
+  height: 30px;
+}
+
+.gameRulesIcon {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  margin-left: 15px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.gameRulesText {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  right: 0%;
+  color: white;
+  background-color: black;
+  width: 300px;
+  padding: 10px 10px 0px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  box-shadow: 0px 5px 10px 0px rgb(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.gameRulesTitle {
+  font-size: 18px;
+  text-align: center;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+
+.gameRulesIcon:hover .gameRulesText {
+  visibility: visible;
+}
+
+.gameVersion {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: gray;
 }

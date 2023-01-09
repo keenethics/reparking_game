@@ -8,8 +8,8 @@ function ErrorBoundary () {
 
   return (
     <div className={styles.container}>
-      <div className={styles.title}>Oops!</div>
-      <div className={styles.content}>Sorry, an unexpected error has occurred.</div>
+      <div className={styles.title}>Error!</div>
+      <div className={styles.content}>{error.message}</div>
     </div>
   );
 }

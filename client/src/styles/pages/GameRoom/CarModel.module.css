@@ -7,19 +7,15 @@
   border-radius: 5px;
 }
 
-.blue {
-  background-image: url("../../../assets/car_blue.svg");
-}
-
-.red {
-  background-image: url("../../../assets/car_red.svg");
-}
-
 .number {
+  position: absolute;
+  top: 66px;
+  left: 16.5px;
+  width: 32px;
+  height: 32px;
   color: white;
   font-size: 28px;
   font-weight: bold;
-  margin-top: 65px;
 }
 
 .highlight {

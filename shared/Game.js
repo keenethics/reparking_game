@@ -4,8 +4,18 @@ const numberOfCellsVertically = 8;
 const numberOfCellsHorizontally = 8;
 
 const Game = {
-  numberOfPlayersInTeam: 8,
-  numberOfTeams: 2,
+  Mode: {
+    solo: 'solo',
+    duo: 'duo',
+    quartet: 'quartet',
+    octet: 'octet',
+  },
+  maxCars: 16,
+  carsOnSide: 8,
+  Side: {
+    top: 'top',
+    bottom: 'bottom',
+  },
   cellWidth,
   cellHeight,
   numberOfCellsVertically,

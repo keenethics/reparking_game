@@ -7,31 +7,43 @@ import IdleTimerToast from './IdleTimerToast';
 import ListOfParticipants from './ListOfParticipants';
 import Board from './Board';
 import Audio from './Audio';
+import CarCrash from './CarCrash';
 import Spinner from '../../components/Spinner';
 import styles from '../../../styles/pages/GameRoom/GameRoom.module.css';
 
 const REACT_APP_SERVER_URL = process.env.REACT_APP_SERVER_URL;
 const REACT_APP_USE_WORLD_TIME = process.env.REACT_APP_USE_WORLD_TIME;
 const TOAST_IDLE_TIME = 4 * 60;
-const MAX_IDLE_TIME = 5 * 60;
+const MAX_IDLE_TIME = 50 * 60;
 
 let userId;
+let gameId;
+let teamN;
 const socket = io(REACT_APP_SERVER_URL, {
   auth: (cb) => {
-    const splitPathname = window.location.pathname.split('/');
-    const roomIdInUrl = splitPathname[splitPathname.length - 1];
-    let roomId = localStorage.getItem('reparking-game-roomId');
     userId = localStorage.getItem('reparking-game-userId');
-    if (roomId !== roomIdInUrl) {
-      roomId = roomIdInUrl;
-      localStorage.setItem('reparking-game-roomId', roomId);
+
+    if (!userId) {
       userId = uuidv4();
       localStorage.setItem('reparking-game-userId', userId);
     }
+    const dividedPathname = window.location.pathname.split('/');
+    const gameIdInUrl = dividedPathname[dividedPathname.indexOf('game') + 1]
+    const teamNInUrl = dividedPathname[dividedPathname.indexOf('team') + 1];
+    gameId = localStorage.getItem('reparking-game-gameId');
+    teamN = localStorage.getItem('reparking-game-teamN');
 
-    cb({ roomId, userId });
+    if (gameId !== gameIdInUrl || teamN !== teamNInUrl) {
+      gameId = gameIdInUrl;
+      teamN = teamNInUrl;
+      localStorage.setItem('reparking-game-gameId', gameId);
+      localStorage.setItem('reparking-game-teamN', teamN);
+    }
+
+    cb({ userId, gameId, teamN });
   },
 });
+
 function GameRoom () {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -225,6 +237,7 @@ function GameRoom () {
         <Board socket={socket} userId={userId} localTimeDeviation={localTimeDeviation} />
         <Audio audioRef={audioRef} />
       </div>
+      <CarCrash socket={socket} userId={userId} />
     </>
   );
 }

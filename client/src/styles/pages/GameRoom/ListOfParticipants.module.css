@@ -1,5 +1,5 @@
 .container {
-  margin-top: 150px;
+  margin-top: 130px;
   padding: 10px;
 }
 
@@ -31,20 +31,40 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-right: 5px solid white;
   width: 30px;
   background-color: rgba(49, 176, 213, 0.3);
 }
 
 .col3 {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(49, 176, 213, 0.3);
+}
+
+.teamColor {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.carNumber {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.col4 {
   display: flex;
 }
 
-.item1 {
-  width: 40px;
-}
-
-.item2 {
+.carName {
   width: 170px;
   border: none;
   padding: 0;
@@ -53,11 +73,11 @@
   text-align: center;
 }
 
-.item3 {
+.carPenalty {
   width: 70px;
 }
 
-.item1, .item2, .item3 {
+.carName, .carPenalty {
   height: 30px;
   background-color: rgba(49, 176, 213, 0.3);
   display: flex;
@@ -74,7 +94,7 @@
   box-shadow: 0px 0px 8px 1px black inset;
 }
 
-.penalty {
+.penaltyBg {
   background-color: rgb(255 117 117);
 }
 
@@ -101,6 +121,6 @@
   .container {
     display: flex;
     justify-content: center;
-    margin: 30px 0;
+    margin: 120px 0px 30px;
   }
 }

@@ -1,75 +1,18 @@
-.topbar {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 30px 100px 0px 0px;
-  display: flex;
-}
-
-.telegramLink {
-  width: 30px;
-  height: 30px;
-}
-
-.gameRulesIcon {
-  position: relative;
-  width: 30px;
-  height: 30px;
-  background-color: black;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  margin-left: 15px;
-  font-weight: bold;
-  font-size: 20px;
-}
-
-.gameRulesText {
-  visibility: hidden;
-  position: absolute;
-  top: 100%;
-  right: 0%;
-  color: white;
-  background-color: black;
-  width: 300px;
-  padding: 10px 10px 0px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 5px;
-  box-shadow: 0px 5px 10px 0px rgb(0, 0, 0, 0.3);
-  z-index: 1;
-}
-
-.gameRulesTitle {
-  font-size: 18px;
-  text-align: center;
-  text-decoration: underline;
-  text-transform: uppercase;
-}
-
-.gameRulesIcon:hover .gameRulesText {
-  visibility: visible;
-}
-
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 120px;
 }
 
 .createGameBtn {
-  width: 160px;
-  height: 54px;
+  padding: 13px 18px;
   font-weight: bold;
   font-size: 20px;
   color: black;
-  border-radius: 10px;
-  border: 3px solid black;
+  border: none;
   outline: none;
   background-color: rgba(240, 173, 78, 0.6);
-  box-sizing: border-box;
   box-shadow: 0px 5px 10px 0px rgb(0, 0, 0, 0.3);
 }
 
@@ -79,15 +22,43 @@
   cursor: pointer;
 }
 
+.radioContainer {
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.radioGroupTitle {
+  font-style: italic;
+  font-weight: bold;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+
+.radioInput {
+  margin-left: 10px;
+}
+
+.radioLabel {
+  text-transform: capitalize;
+}
+
+.error {
+  font-weight: bold;
+  color: #e24945;
+  background-color: white;
+  border: 2px solid #e24945;
+  padding: 10px;
+  margin-top: 40px;
+}
+
 .gameSection {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 40px;
-  height: 60px;
 }
 
-.sectionTitle {
+.gameSectionTitle {
   font-size: 17px;
   font-style: italic;
   font-weight: bold;
@@ -95,12 +66,22 @@
   margin-bottom: 10px;
 }
 
+.gameSectionBody {
+  width: 250px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+}
+
 .urlWrapper {
   display: flex;
+  box-shadow: 0px 5px 10px 0px rgb(0, 0, 0, 0.3);
 }
 
 .linkBtn {
   font-size: 16px;
+  padding: 1px 10px;
 }
 
 .clipboardBtn {
@@ -110,21 +91,13 @@
 .linkBtn, .clipboardBtn {
   height: 30px;
   color: black;
-  border-radius: 5px;
-  border: 1px solid black;
+  border: none;
   outline: none;
-  background-color: rgba(49, 176, 213, 0.6);
-  box-shadow: 0px 5px 10px 0px rgb(0, 0, 0, 0.3);
+  background-color: rgba(49, 176, 213, 0.5);
 }
 
 .linkBtn:hover, .clipboardBtn:hover {
   color: white;
   background-color: #31b0d5;
   cursor: pointer;
-}
-
-@media only screen and (max-width: 992px) {
-  .container {
-    margin-top: 100px;
-  }
 }
